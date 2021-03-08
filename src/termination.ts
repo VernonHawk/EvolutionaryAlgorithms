@@ -1,15 +1,15 @@
 const didConverge = (): boolean => {
   // TODO
-  return true
+  return false
 }
 
 type ReachedIterationLimitAttrs = {
-  populationSize: number
+  dimensions: number
   iterations: number
 }
 
-const reachedIterationLimit = ({populationSize, iterations}: ReachedIterationLimitAttrs): boolean =>
-  populationSize * 40_000 >= iterations
+const reachedIterationLimit = ({dimensions, iterations}: ReachedIterationLimitAttrs): boolean =>
+  iterations >= (dimensions > 3 ? 400_000 : 40_000)
 
 const shouldStop = (attrs: ReachedIterationLimitAttrs): boolean =>
   didConverge() || reachedIterationLimit(attrs)

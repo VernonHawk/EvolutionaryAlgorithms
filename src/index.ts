@@ -28,8 +28,8 @@ const testAlgorithm = (
   fun: testFunctions.TestFunction,
 ): Individual[] => {
   let currentPopulation = individualsToPopulation(startingIndividuals, fun)
-  
-  while (!shouldStop({iterations: 0, populationSize: startingIndividuals.length})) {
+
+  for (let i = 0; !shouldStop({iterations: i, dimensions: startingIndividuals[0].length}); ++i) {
     const parents = pickParents(currentPopulation)
     const children = generateChildren(parents)
     currentPopulation = pickChildren(children)
