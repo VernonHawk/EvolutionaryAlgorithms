@@ -13,7 +13,9 @@ const run = (
 ): {function: keyof typeof testFunctions; results: Individual[]}[][] => {
   const populationSize = getPopulationSize(dimensions)
 
-  return _.times(10, () => {
+  return _.times(10, (i) => {
+    console.log()
+    console.log(`test #${i}`)
     const startingIndividuals = generateStartingIndividuals({size: populationSize, dimensions})
 
     return _.map(testFunctions, (fun, name) => ({
@@ -27,9 +29,14 @@ const testAlgorithm = (
   startingIndividuals: Individual[],
   fun: testFunctions.TestFunction,
 ): Individual[] => {
+  console.log()
+  console.log(fun.name)
+
   let currentPopulation = individualsToPopulation(startingIndividuals, fun)
 
   for (let i = 0; !shouldStop({iterations: i, dimensions: startingIndividuals[0].length}); ++i) {
+    if (i % 1000 === 0) console.log('iteration', i)
+
     const parents = pickParents(currentPopulation)
     const children = generateChildren(parents)
     currentPopulation = pickChildren(children)

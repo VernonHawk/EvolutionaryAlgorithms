@@ -1,8 +1,8 @@
-import {Individual, Population} from './common'
+import {Population} from './common'
 
-const generateChildren = (parents: Individual[]): Population => {
+const generateChildren = (parents: Population): Population => {
   // TODO
-  return []
+  return parents
 }
 
 // L

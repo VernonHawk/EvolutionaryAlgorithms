@@ -4,7 +4,7 @@ type ChildrenPicker = (population: Population) => Population
 
 const pickChildren: ChildrenPicker = population => {
   // TODO
-  return []
+  return population
 }
 
 const CROWD_TOUR: ChildrenPicker = population => {
