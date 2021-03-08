@@ -1,8 +1,8 @@
-import {Health, Individual} from './common'
+import {Health, Individual, makeHealth} from './common'
 
 const calculateHealth = (individual: Individual): Health => {
   // TODO
-  return 0 as Health
+  return makeHealth(0)
 }
 
 export default calculateHealth

@@ -1,7 +1,12 @@
+import {Brand, make} from 'ts-brand'
 import calculateHealth from './health'
 
-export type Health = number & {__TAG__: 'Health'}
-export type Individual = number & {__TAG__: 'Individual'}
+export type Health = Brand<number, 'Health'>
+export const makeHealth = make<Health>()
+
+export type Individual = Brand<number[], 'Individual'>
+export const makeIndividual = make<Individual>()
+
 export type Population = {individual: Individual; health: Health}[]
 
 export const individualsToPopulation = (individuals: Individual[]): Population =>

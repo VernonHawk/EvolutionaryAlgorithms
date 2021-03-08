@@ -14,7 +14,7 @@ const run = (
   const populationSize = getPopulationSize(dimensions)
 
   return _.times(10, () => {
-    const startingPopulation = generateStartingPopulation(populationSize)
+    const startingPopulation = generateStartingPopulation({size: populationSize, dimensions})
 
     return _.map(testFunctions, (fun, name) => ({
       function: name as keyof typeof testFunctions,
