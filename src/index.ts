@@ -1,10 +1,10 @@
 import _ from 'lodash'
 import generateChildren from './childrenGeneration'
 import pickChildren from './childrenSelection'
-import {Individual, Population} from './common'
+import {Individual, individualsToPopulation} from './common'
 import determinePeaks from './determinePeaks'
 import pickParents from './parentsSelection'
-import generateStartingPopulation from './startingPopulation'
+import generateStartingIndividuals from './startingPopulation'
 import shouldStop from './termination'
 import * as testFunctions from './testFunctions'
 
@@ -14,22 +14,22 @@ const run = (
   const populationSize = getPopulationSize(dimensions)
 
   return _.times(10, () => {
-    const startingPopulation = generateStartingPopulation({size: populationSize, dimensions})
+    const startingIndividuals = generateStartingIndividuals({size: populationSize, dimensions})
 
     return _.map(testFunctions, (fun, name) => ({
       function: name as keyof typeof testFunctions,
-      results: testAlgorithm(startingPopulation, fun),
+      results: testAlgorithm(startingIndividuals, fun),
     }))
   })
 }
 
 const testAlgorithm = (
-  startingPopulation: Population,
+  startingIndividuals: Individual[],
   fun: testFunctions.TestFunction,
 ): Individual[] => {
-  let currentPopulation = startingPopulation
-
-  while (!shouldStop({iterations: 0, populationSize: startingPopulation.length})) {
+  let currentPopulation = individualsToPopulation(startingIndividuals, fun)
+  
+  while (!shouldStop({iterations: 0, populationSize: startingIndividuals.length})) {
     const parents = pickParents(currentPopulation)
     const children = generateChildren(parents)
     currentPopulation = pickChildren(children)

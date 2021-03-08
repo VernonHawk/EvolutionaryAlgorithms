@@ -1,23 +1,12 @@
 import _ from 'lodash'
-import {Individual, individualsToPopulation, makeIndividual} from './common'
+import {Individual, makeIndividual} from './common'
 
-const generateStartingIndividuals = ({
-  size,
-  dimensions,
-}: {
+type Attrs = {
   size: number
   dimensions: number
-}): Individual[] =>
-  Array(size)
-    .fill(0)
-    .map(() =>
-      makeIndividual(
-        Array(dimensions)
-          .fill(0)
-          .map(() => _.random(0, 1, true)),
-      ),
-    )
+}
 
-const generateStartingPopulation = _.flow(generateStartingIndividuals, individualsToPopulation)
+const generateStartingIndividuals = ({size, dimensions}: Attrs): Individual[] =>
+  _.times(size, () => makeIndividual(_.times(dimensions, () => _.random(0, 1, true))))
 
-export default generateStartingPopulation
+export default generateStartingIndividuals
