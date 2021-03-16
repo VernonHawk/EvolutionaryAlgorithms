@@ -1,50 +1,36 @@
 import _ from 'lodash'
-import generateChildren from './childrenGeneration'
-import pickChildren from './childrenSelection'
-import {Individual, individualsToPopulation} from './common'
-import determinePeaks from './determinePeaks'
-import pickParents from './parentsSelection'
+import {Individual} from './common'
 import generateStartingIndividuals from './startingPopulation'
-import shouldStop from './termination'
-import * as testFunctions from './testFunctions'
+import testAlgorithm from './testAlgorithm'
+import * as testFunctionsSpecs from './testFunctions'
 
 const run = (
   dimensions: number,
-): {function: keyof typeof testFunctions; results: Individual[]}[][] => {
+): {
+  function: keyof typeof testFunctionsSpecs
+  mutationProbability: number
+  results: Individual[]
+}[][] => {
   const populationSize = getPopulationSize(dimensions)
 
-  return _.times(10, (i) => {
+  return _.times(10, i => {
     console.log()
     console.log(`test #${i}`)
     const startingIndividuals = generateStartingIndividuals({size: populationSize, dimensions})
 
-    return _.map(testFunctions, (fun, name) => ({
-      function: name as keyof typeof testFunctions,
-      results: testAlgorithm(startingIndividuals, fun),
-    }))
+    return _.flatMap(testFunctionsSpecs, (testFunctionSpec, name) =>
+      MUTATION_PROBABILITIES.map(mutationProbability => ({
+        function: name as keyof typeof testFunctionsSpecs,
+        mutationProbability,
+        results: testAlgorithm(startingIndividuals, {testFunctionSpec, mutationProbability}),
+      })),
+    )
   })
 }
 
-const testAlgorithm = (
-  startingIndividuals: Individual[],
-  fun: testFunctions.TestFunction,
-): Individual[] => {
-  console.log()
-  console.log(fun.name)
-
-  let currentPopulation = individualsToPopulation(startingIndividuals, fun)
-
-  for (let i = 0; !shouldStop({iterations: i, dimensions: startingIndividuals[0].length}); ++i) {
-    if (i % 1000 === 0) console.log('iteration', i)
-
-    const parents = pickParents(currentPopulation)
-    const children = generateChildren(parents)
-    currentPopulation = pickChildren(children)
-  }
-
-  return determinePeaks(currentPopulation)
-}
-
 const getPopulationSize = (dimensions: number): number => (dimensions <= 3 ? 500 : 5000)
+
+// Pm
+const MUTATION_PROBABILITIES = [0.15, 0.75]
 
 export default run

@@ -4,14 +4,21 @@ import {TestFunction} from './testFunctions'
 export type Health = Brand<number, 'Health'>
 export const makeHealth = make<Health>()
 
-export type Individual = Brand<number[], 'Individual'>
+export type Gene = Brand<number, 'Gene'>
+export const makeGene = make<Gene>()
+
+export type Individual = Gene[]
 export const makeIndividual = make<Individual>()
 
 export type Population = PopulationEntry[]
 export type PopulationEntry = {individual: Individual; health: Health}
 
 export const individualsToPopulation = (individuals: Individual[], fun: TestFunction): Population =>
-  individuals.map(individual => ({individual, health: makeHealth(fun(individual))}))
+  individuals.map(individualToPopulationEntry(fun))
+
+export const individualToPopulationEntry = (fun: TestFunction) => (
+  individual: Individual,
+): PopulationEntry => ({individual, health: makeHealth(fun(individual))})
 
 export type SortedArray<T> = Brand<T[], 'SortedArray'>
 

@@ -1,10 +1,11 @@
+import _ from 'lodash'
 import {Population} from './common'
 
-type ChildrenPicker = (population: Population) => Population
+type ChildrenPicker = (population: Population, size: number) => Population
 
-const pickChildren: ChildrenPicker = population => {
+const pickChildren: ChildrenPicker = (population, size) => {
   // TODO
-  return population
+  return _.take(population, size)
 }
 
 const CROWD_TOUR: ChildrenPicker = population => {
