@@ -2,6 +2,7 @@ import generateChildren from './childrenGeneration'
 import pickChildren from './childrenSelection'
 import {Individual, individualsToPopulation} from './common'
 import determinePeaks from './determinePeaks'
+import {avgDistance} from './distance'
 import pickParents from './parentsSelection'
 import shouldStop from './termination'
 import {TestFunctionSpec} from './testFunctions'
@@ -23,10 +24,13 @@ const testAlgorithm = (
   let standardDeviation = BASE_STANDARD_DEVIATION
 
   for (let i = 0; !shouldStop({iterations: i, dimensions: startingIndividuals[0].length}); ++i) {
-    if (i % 1000 === 0) console.log('iteration', i)
+    const shouldPrint = i % 1000 === 0
+    if (shouldPrint) console.log('iteration', i)
 
     if (i % STANDARD_DEVIATION_GAP === 0) {
-      standardDeviation = BASE_STANDARD_DEVIATION // TODO: Regenerate standardDeviation from avg individual distances
+      standardDeviation = BASE_STANDARD_DEVIATION * avgDistance(currentPopulation)
+
+      if (shouldPrint) console.log('standard deviation', standardDeviation)
     }
 
     const parents = pickParents(currentPopulation)

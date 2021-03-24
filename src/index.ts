@@ -14,8 +14,8 @@ const run = (
   const populationSize = getPopulationSize(dimensions)
 
   return _.times(10, i => {
-    console.log()
-    console.log(`test #${i}`)
+    console.log(`population size ${populationSize}, dimensions ${dimensions}`)
+    console.log(`test #${i + 1}`)
     const startingIndividuals = generateStartingIndividuals({size: populationSize, dimensions})
 
     return _.flatMap(testFunctionsSpecs, (testFunctionSpec, name) =>
