@@ -4,7 +4,7 @@ import generateStartingIndividuals from './startingPopulation'
 import testAlgorithm from './testAlgorithm'
 import * as testFunctionsSpecs from './testFunctions'
 import * as childrenSelectionFuncs from './childrenSelection'
-import {withTime, withTimeF} from './utils'
+import {withTime, withTimeF} from './common'
 
 const run = (
   dimensions: number,
