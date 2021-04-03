@@ -1,38 +1,30 @@
-import _ from 'lodash'
 import {Population} from './common'
 
-type ChildrenPicker = (population: Population, size: number) => Population
+export type ChildrenPicker = (population: Population, size: number) => Population
 
-const pickChildren: ChildrenPicker = (population, size) => {
+export const CROWD_TOUR: ChildrenPicker = population => {
   // TODO
-  return _.take(population, size)
+  return population
 }
 
-const CROWD_TOUR: ChildrenPicker = population => {
+export const ELITE: ChildrenPicker = population => {
   // TODO
-  return []
+  return population
 }
 
-const ELITE: ChildrenPicker = population => {
+export const ALL: ChildrenPicker = population => population
+
+export const RAND: ChildrenPicker = population => {
   // TODO
-  return []
+  return population
 }
 
-const ALL: ChildrenPicker = population => population
-
-const RAND: ChildrenPicker = population => {
+export const FUDS: ChildrenPicker = population => {
   // TODO
-  return []
+  return population
 }
 
-const FUDS: ChildrenPicker = population => {
+export const MOD_FUDS: ChildrenPicker = population => {
   // TODO
-  return []
+  return population
 }
-
-const MOD_FUDS: ChildrenPicker = population => {
-  // TODO
-  return []
-}
-
-export default pickChildren

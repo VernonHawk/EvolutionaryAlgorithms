@@ -1,5 +1,5 @@
 import generateChildren from './childrenGeneration'
-import pickChildren from './childrenSelection'
+import {ChildrenPicker} from './childrenSelection'
 import {Individual, individualsToPopulation} from './common'
 import determinePeaks from './determinePeaks'
 import {avgDistance} from './distance'
@@ -9,14 +9,22 @@ import {TestFunctionSpec} from './testFunctions'
 
 type AlgorithmConfig = {
   testFunctionSpec: TestFunctionSpec
+  childrenSelectionFun: ChildrenPicker
   mutationProbability: number
 }
 
 const testAlgorithm = (
   startingIndividuals: Individual[],
-  {testFunctionSpec, mutationProbability}: AlgorithmConfig,
+  {testFunctionSpec, childrenSelectionFun, mutationProbability}: AlgorithmConfig,
 ): Individual[] => {
-  console.log('\nFunc', testFunctionSpec.name, '- Mutation probability', mutationProbability)
+  console.log(
+    '\nFunc',
+    testFunctionSpec.name,
+    '- Children Selection',
+    childrenSelectionFun.name,
+    '- Mutation probability',
+    mutationProbability,
+  )
 
   let currentPopulation = individualsToPopulation(startingIndividuals, testFunctionSpec.fun)
 
@@ -24,7 +32,11 @@ const testAlgorithm = (
 
   for (let i = 0; !shouldStop({iterations: i, dimensions: startingIndividuals[0].length}); ++i) {
     const shouldPrint = i % 1000 === 0
-    if (shouldPrint) console.log('\nIteration', i)
+    if (shouldPrint) {
+      console.log('\nIteration', i)
+      console.timeEnd(`${1000} iterations time`)
+      console.time(`${1000} iterations time`)
+    }
 
     if (i % STANDARD_DEVIATION_GAP === 0) {
       standardDeviation = BASE_STANDARD_DEVIATION * avgDistance(currentPopulation)
@@ -41,7 +53,7 @@ const testAlgorithm = (
       testFunctionSpec,
     })
 
-    currentPopulation = pickChildren([...parents, ...children], startingIndividuals.length)
+    currentPopulation = childrenSelectionFun([...parents, ...children], startingIndividuals.length)
 
     if (shouldPrint) console.log('New population size', currentPopulation.length)
   }
