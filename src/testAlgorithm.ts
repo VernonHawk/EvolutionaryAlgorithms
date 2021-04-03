@@ -17,15 +17,6 @@ const testAlgorithm = (
   startingIndividuals: Individual[],
   {testFunctionSpec, childrenSelectionFun, mutationProbability}: AlgorithmConfig,
 ): Individual[] => {
-  console.log(
-    '\nFunc',
-    testFunctionSpec.name,
-    '- Children Selection',
-    childrenSelectionFun.name,
-    '- Mutation probability',
-    mutationProbability,
-  )
-
   let currentPopulation = individualsToPopulation(startingIndividuals, testFunctionSpec.fun)
 
   let standardDeviation = BASE_STANDARD_DEVIATION

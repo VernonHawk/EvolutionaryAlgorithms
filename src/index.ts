@@ -44,16 +44,27 @@ const runTestFunction = (
     childrenSelectionFuncs,
     withTimeF('Children selection function', childrenSelectionFun =>
       MUTATION_PROBABILITIES.map(
-        withTimeF('Mutation probability', mutationProbability => ({
-          fitnessFun: testFunctionSpec.name as keyof typeof testFunctionsSpecs,
-          childrenSelectionFun: childrenSelectionFun.name as keyof typeof childrenSelectionFuncs,
-          mutationProbability,
-          results: testAlgorithm(startingIndividuals, {
-            testFunctionSpec,
-            childrenSelectionFun,
+        withTimeF('Mutation probability', mutationProbability => {
+          console.log(
+            '\nFunc',
+            testFunctionSpec.name,
+            '- Children selection',
+            childrenSelectionFun.name,
+            '- Mutation probability',
             mutationProbability,
-          }),
-        })),
+          )
+
+          return {
+            fitnessFun: testFunctionSpec.name as keyof typeof testFunctionsSpecs,
+            childrenSelectionFun: childrenSelectionFun.name as keyof typeof childrenSelectionFuncs,
+            mutationProbability,
+            results: testAlgorithm(startingIndividuals, {
+              testFunctionSpec,
+              childrenSelectionFun,
+              mutationProbability,
+            }),
+          }
+        }),
       ),
     ),
   )
