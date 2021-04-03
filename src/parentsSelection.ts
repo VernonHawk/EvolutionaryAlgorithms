@@ -1,10 +1,10 @@
 import _ from 'lodash'
 import {Population, PopulationEntry, sort, SortedArray} from './common'
 
-const FUSS = (population: Population): Population => {
+const FUSS = (population: Population, size: number): Population => {
   const sorted = sort(population, (a, b) => a.health - b.health)
 
-  const uniformRandomHealth = _.times(sorted.length, () =>
+  const uniformRandomHealth = _.times(size, () =>
     _.random(_.first(sorted)!.health, _.last(sorted)!.health),
   )
 

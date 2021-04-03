@@ -18,24 +18,21 @@ const generateChildren = ({
 }: Attrs): Population => {
   const normalDistribution = random.normal(0, standardDeviation)
 
-  return [
-    ...parents,
-    ...parents.flatMap(parent =>
-      _.times(CHILDREN_TO_GENERATE, () =>
-        individualToPopulationEntry(testFunctionSpec.fun)(
-          makeIndividual(
-            parent.individual.map(
-              geneMutation({
-                normalDistribution,
-                clamp: testFunctionSpec.argClamp,
-                mutationProbability,
-              }),
-            ),
+  return parents.flatMap(parent =>
+    _.times(CHILDREN_TO_GENERATE, () =>
+      individualToPopulationEntry(testFunctionSpec.fun)(
+        makeIndividual(
+          parent.individual.map(
+            geneMutation({
+              normalDistribution,
+              clamp: testFunctionSpec.argClamp,
+              mutationProbability,
+            }),
           ),
         ),
       ),
     ),
-  ]
+  )
 }
 
 type MutationAttrs = {

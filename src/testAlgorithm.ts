@@ -32,7 +32,7 @@ const testAlgorithm = (
       if (shouldPrint) console.log('Standard deviation', standardDeviation)
     }
 
-    const parents = pickParents(currentPopulation)
+    const parents = pickParents(currentPopulation, startingIndividuals.length)
 
     const children = generateChildren({
       parents,
@@ -41,11 +41,9 @@ const testAlgorithm = (
       testFunctionSpec,
     })
 
-    if (shouldPrint) console.log('Generated children num', children.length)
+    currentPopulation = pickChildren([...parents, ...children], startingIndividuals.length)
 
-    currentPopulation = pickChildren(children, startingIndividuals.length)
-
-    if (shouldPrint) console.log('Picked children num', currentPopulation.length)
+    if (shouldPrint) console.log('New population size', currentPopulation.length)
   }
 
   return determinePeaks(currentPopulation)

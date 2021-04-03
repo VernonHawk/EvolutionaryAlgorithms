@@ -18,10 +18,7 @@ const ELITE: ChildrenPicker = population => {
   return []
 }
 
-const ALL: ChildrenPicker = population => {
-  // TODO
-  return []
-}
+const ALL: ChildrenPicker = population => population
 
 const RAND: ChildrenPicker = population => {
   // TODO
