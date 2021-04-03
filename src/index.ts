@@ -42,25 +42,25 @@ const runTestFunction = (
 ) =>
   _.flatMap(
     childrenSelectionFuncs,
-    withTimeF('Children selection function', childrenSelectionFun =>
+    withTimeF('Children selection function', childrenSelectionConfig =>
       MUTATION_PROBABILITIES.map(
         withTimeF('Mutation probability', mutationProbability => {
           console.log(
             '\nFunc',
             testFunctionSpec.name,
             '- Children selection',
-            childrenSelectionFun.name,
+            childrenSelectionConfig.name,
             '- Mutation probability',
             mutationProbability,
           )
 
           return {
             fitnessFun: testFunctionSpec.name as keyof typeof testFunctionsSpecs,
-            childrenSelectionFun: childrenSelectionFun.name as keyof typeof childrenSelectionFuncs,
+            childrenSelectionFun: childrenSelectionConfig.name as keyof typeof childrenSelectionFuncs,
             mutationProbability,
             results: testAlgorithm(startingIndividuals, {
               testFunctionSpec,
-              childrenSelectionFun,
+              childrenSelectionConfig,
               mutationProbability,
             }),
           }
