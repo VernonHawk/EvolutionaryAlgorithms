@@ -1,5 +1,6 @@
 import _ from 'lodash'
-import {Population} from './common'
+import random from 'random'
+import {lowerBound, mutableSwapRemove, Population} from './common'
 
 export type ChildrenPickerConfig =
   | {
@@ -9,7 +10,12 @@ export type ChildrenPickerConfig =
     }
   | {
       name: string
-      fun: (population: Population, size: number, minHealth: number, maxHealth: number) => Population
+      fun: (
+        population: Population,
+        size: number,
+        minHealth: number,
+        maxHealth: number,
+      ) => Population
       needsMinMaxHealth: true
     }
 
@@ -56,8 +62,34 @@ export const RAND: ChildrenPickerConfig = {
 export const FUDS: ChildrenPickerConfig = {
   name: 'FUDS',
   fun: (population, size, minHealth, maxHealth) => {
-    // TODO
-    return _.take(population, size)
+    const groupsAmount = Math.round(Math.sqrt(population.length))
+    const epsilon = (maxHealth - minHealth) / groupsAmount
+
+    const groups = _.groupBy(population, ({health}) =>
+      _.clamp(Math.floor((health - minHealth) / epsilon), 0, groupsAmount - 1),
+    )
+
+    const groupsByLength = Object.values(_.groupBy(groups, 'length')).flat()
+
+    for (let currSize = population.length; currSize > size; ) {
+      const maxSize = _.last(groupsByLength)!.length
+
+      const randomGenerator = random.uniformInt(0, maxSize - 1)
+
+      for (
+        let firstMaxSizeIdx = lowerBound(groupsByLength, maxSize, g => g.length);
+        firstMaxSizeIdx < groupsByLength.length;
+        ++firstMaxSizeIdx
+      ) {
+        mutableSwapRemove(groupsByLength[firstMaxSizeIdx], randomGenerator())
+
+        if (--currSize <= size) {
+          break
+        }
+      }
+    }
+
+    return groupsByLength.flat()
   },
   needsMinMaxHealth: true,
 }

@@ -15,7 +15,7 @@ type AlgorithmConfig = {
 }
 
 const testAlgorithm = (
-  startingIndividuals: Individual[],
+  startingIndividuals: readonly Individual[],
   {testFunctionSpec, childrenSelectionConfig, mutationProbability}: AlgorithmConfig,
 ): Individual[] => {
   let currentPopulation = individualsToPopulation(startingIndividuals, testFunctionSpec.fun)

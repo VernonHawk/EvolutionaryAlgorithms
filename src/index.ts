@@ -12,7 +12,7 @@ const run = (
   fitnessFun: keyof typeof testFunctionsSpecs
   childrenSelectionFun: keyof typeof childrenSelectionFuncs
   mutationProbability: number
-  results: Individual[]
+  results: readonly Individual[]
 }[][] => {
   const populationSize = getPopulationSize(dimensions)
 

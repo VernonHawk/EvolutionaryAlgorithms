@@ -1,14 +1,13 @@
 import _ from 'lodash'
+import random from 'random'
 import {Population, PopulationEntry, sort, SortedArray} from './common'
 
 const FUSS = (population: Population, size: number): Population => {
   const sorted = sort(population, (a, b) => a.health - b.health)
 
-  const uniformRandomHealth = _.times(size, () =>
-    _.random(_.first(sorted)!.health, _.last(sorted)!.health),
-  )
+  const randomGenerator = random.uniform(_.first(sorted)!.health, _.last(sorted)!.health)
 
-  return uniformRandomHealth.map(closest(sorted))
+  return _.times(size, randomGenerator).map(closest(sorted))
 }
 
 const closest = (arr: SortedArray<PopulationEntry>) => (target: number): PopulationEntry => {
