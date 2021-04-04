@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import random from 'random'
-import {lowerBound, mutableSwapRemove, Population} from './common'
+import {lowerBound, mutableSwapRemove, Population, PopulationEntry} from './common'
 
 export type ChildrenPickerConfig =
   | {
@@ -62,26 +62,19 @@ export const RAND: ChildrenPickerConfig = {
 export const FUDS: ChildrenPickerConfig = {
   name: 'FUDS',
   fun: (population, size, minHealth, maxHealth) => {
-    const groupsAmount = Math.round(Math.sqrt(population.length))
-    const epsilon = (maxHealth - minHealth) / groupsAmount
-
-    const groups = _.groupBy(population, ({health}) =>
-      _.clamp(Math.floor((health - minHealth) / epsilon), 0, groupsAmount - 1),
-    )
-
-    const groupsByLength = Object.values(_.groupBy(groups, 'length')).flat()
+    const groups = groupPopulation(population, minHealth, maxHealth)
 
     for (let currSize = population.length; currSize > size; ) {
-      const maxSize = _.last(groupsByLength)!.length
+      const maxSize = _.last(groups)!.length
 
       const randomGenerator = random.uniformInt(0, maxSize - 1)
 
       for (
-        let firstMaxSizeIdx = lowerBound(groupsByLength, maxSize, g => g.length);
-        firstMaxSizeIdx < groupsByLength.length;
+        let firstMaxSizeIdx = lowerBound(groups, maxSize, g => g.length);
+        firstMaxSizeIdx < groups.length;
         ++firstMaxSizeIdx
       ) {
-        mutableSwapRemove(groupsByLength[firstMaxSizeIdx], randomGenerator())
+        mutableSwapRemove(groups[firstMaxSizeIdx], randomGenerator())
 
         if (--currSize <= size) {
           break
@@ -89,7 +82,7 @@ export const FUDS: ChildrenPickerConfig = {
       }
     }
 
-    return groupsByLength.flat()
+    return groups.flat()
   },
   needsMinMaxHealth: true,
 }
@@ -97,8 +90,41 @@ export const FUDS: ChildrenPickerConfig = {
 export const MOD_FUDS: ChildrenPickerConfig = {
   name: 'MOD_FUDS',
   fun: (population, size, minHealth, maxHealth) => {
-    // TODO
-    return _.take(population, size)
+    const groups = groupPopulation(population, minHealth, maxHealth)
+    groups.forEach(group => group.sort((a, b) => b.health - a.health))
+
+    for (let currSize = population.length; currSize > size; ) {
+      const maxSize = _.last(groups)!.length
+
+      for (
+        let firstMaxSizeIdx = lowerBound(groups, maxSize, g => g.length);
+        firstMaxSizeIdx < groups.length;
+        ++firstMaxSizeIdx
+      ) {
+        groups[firstMaxSizeIdx].pop()
+
+        if (--currSize <= size) {
+          break
+        }
+      }
+    }
+
+    return groups.flat()
   },
   needsMinMaxHealth: true,
+}
+
+const groupPopulation = (
+  population: Population,
+  minHealth: number,
+  maxHealth: number,
+): PopulationEntry[][] => {
+  const groupsAmount = Math.round(Math.sqrt(population.length))
+  const epsilon = (maxHealth - minHealth) / groupsAmount
+
+  const groups = _.groupBy(population, ({health}) =>
+    _.clamp(Math.floor((health - minHealth) / epsilon), 0, groupsAmount - 1),
+  )
+
+  return Object.values(_.groupBy(groups, 'length')).flat()
 }
