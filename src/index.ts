@@ -1,10 +1,10 @@
 import _ from 'lodash'
-import {Individual} from './common'
-import generateStartingIndividuals from './startingPopulation'
-import testAlgorithm from './testAlgorithm'
+import {Individual, makeIndividual, Population} from './common'
+import runEvolution from './runEvolution'
 import * as testFunctionsSpecs from './testFunctions'
 import * as childrenSelectionFuncs from './childrenSelection'
 import {withTime, withTimeF} from './common'
+import determinePeaks from './determinePeaks'
 
 const run = (
   dimensions: number,
@@ -12,7 +12,7 @@ const run = (
   fitnessFun: keyof typeof testFunctionsSpecs
   childrenSelectionFun: keyof typeof childrenSelectionFuncs
   mutationProbability: number
-  results: readonly Individual[]
+  population: Population
 }[][] => {
   const populationSize = getPopulationSize(dimensions)
 
@@ -54,20 +54,33 @@ const runTestFunction = (
             mutationProbability,
           )
 
+          const finalPopulation = runEvolution(startingIndividuals, {
+            testFunctionSpec,
+            childrenSelectionConfig,
+            mutationProbability,
+          })
+
+          const peaks = determinePeaks(finalPopulation)
+
           return {
             fitnessFun: testFunctionSpec.name as keyof typeof testFunctionsSpecs,
             childrenSelectionFun: childrenSelectionConfig.name as keyof typeof childrenSelectionFuncs,
             mutationProbability,
-            results: testAlgorithm(startingIndividuals, {
-              testFunctionSpec,
-              childrenSelectionConfig,
-              mutationProbability,
-            }),
+            population: finalPopulation,
           }
         }),
       ),
     ),
   )
+
+const generateStartingIndividuals = ({
+  size,
+  dimensions,
+}: {
+  size: number
+  dimensions: number
+}): Individual[] =>
+  _.times(size, () => makeIndividual(_.times(dimensions, () => _.random(0, 1, true))))
 
 const getPopulationSize = (dimensions: number): number => (dimensions <= 3 ? 500 : 5000)
 

@@ -1,14 +1,5 @@
 import {Individual, Population} from './common'
 
-export const distance = (a: Individual, b: Individual): number =>
-  Math.sqrt(
-    a.reduce((acc, _curr, idx) => {
-      const diff = a[idx] - b[idx]
-
-      return acc + diff * diff
-    }, 0),
-  )
-
 export const avgDistance = (population: Population): number => {
   const N = population.length
 
@@ -24,3 +15,12 @@ export const avgDistance = (population: Population): number => {
 
   return distances / distancesAmount
 }
+
+const distance = (a: Individual, b: Individual): number =>
+  Math.sqrt(
+    a.reduce((acc, _curr, idx) => {
+      const diff = a[idx] - b[idx]
+
+      return acc + diff * diff
+    }, 0),
+  )
