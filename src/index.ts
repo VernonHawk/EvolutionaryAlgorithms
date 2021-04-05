@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {Individual, makeIndividual, Population} from './common'
+import {Individual, makeIndividual, Population, PopulationEntry} from './common'
 import runEvolution from './runEvolution'
 import * as testFunctionsSpecs from './testFunctions'
 import * as childrenSelectionFuncs from './childrenSelection'
@@ -13,6 +13,7 @@ const run = (
   childrenSelectionFun: keyof typeof childrenSelectionFuncs
   mutationProbability: number
   population: Population
+  peaks: PopulationEntry[]
 }[][] => {
   const populationSize = getPopulationSize(dimensions)
 
@@ -61,12 +62,14 @@ const runTestFunction = (
           })
 
           const peaks = determinePeaks(finalPopulation)
+          console.log('Peaks', peaks)
 
           return {
             fitnessFun: testFunctionSpec.name as keyof typeof testFunctionsSpecs,
             childrenSelectionFun: childrenSelectionConfig.name as keyof typeof childrenSelectionFuncs,
             mutationProbability,
             population: finalPopulation,
+            peaks,
           }
         }),
       ),
