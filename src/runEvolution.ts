@@ -16,7 +16,7 @@ type AlgorithmConfig = {
 const runEvolution = (
   startingIndividuals: readonly Individual[],
   {testFunctionSpec, childrenSelectionConfig, mutationProbability}: AlgorithmConfig,
-): Population => {
+): {finalPopulation: Population; iterations: number; didConverge: boolean} => {
   let currentPopulation = individualsToPopulation(startingIndividuals, testFunctionSpec.fun)
 
   let standardDeviation = BASE_STANDARD_DEVIATION
@@ -78,7 +78,7 @@ const runEvolution = (
 
   console.log('\nStopped at iteration', iterations)
 
-  return currentPopulation
+  return {finalPopulation: currentPopulation, iterations, didConverge: convergency.didConverge()}
 }
 
 export const makeHealthLimitsTracker = (): {
@@ -108,6 +108,6 @@ const BASE_STANDARD_DEVIATION = 0.0625
 
 const STANDARD_DEVIATION_GAP = 60
 
-const PRINT_GAP = 2000
+const PRINT_GAP = 3000
 
 export default runEvolution

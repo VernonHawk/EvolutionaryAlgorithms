@@ -1,13 +1,13 @@
-import {Population, PopulationEntry} from './common'
+import {makePeak, Population, Peak} from './common'
 import {distance} from './distance'
 
-const determinePeaks = (population: Population): PopulationEntry[] => {
+const determineSeeds = (population: Population): Peak[] => {
   const sortedPopulation = population.slice().sort((a, b) => b.health - a.health)
-  const seeds: PopulationEntry[] = []
+  const seeds: Peak[] = []
 
   sortedPopulation.forEach(popEntry => {
     if (seeds.every(seed => distance(seed.individual, popEntry.individual) > EPSILON)) {
-      seeds.push(popEntry)
+      seeds.push(makePeak(popEntry))
     }
   })
 
@@ -16,4 +16,4 @@ const determinePeaks = (population: Population): PopulationEntry[] => {
 
 const EPSILON = 0.03
 
-export default determinePeaks
+export default determineSeeds

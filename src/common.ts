@@ -14,6 +14,9 @@ export const makeIndividual = make<Individual>()
 export type Population = PopulationEntry[]
 export type PopulationEntry = {individual: Individual; health: Health}
 
+export type Peak = Brand<PopulationEntry, 'Peak'>
+export const makePeak = make<Peak>()
+
 export const individualsToPopulation = (
   individuals: readonly Individual[],
   fun: TestFunction,

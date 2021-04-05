@@ -1,10 +1,11 @@
 import _ from 'lodash'
-import {Individual, makeIndividual, Population, PopulationEntry} from './common'
+import {Individual, makeIndividual} from './common'
 import runEvolution from './runEvolution'
 import * as testFunctionsSpecs from './testFunctions'
 import * as childrenSelectionFuncs from './childrenSelection'
 import {withTime, withTimeF} from './common'
-import determinePeaks from './determinePeaks'
+import determineSeeds from './determineSeeds'
+import getStats, {Stats} from './stats'
 
 const run = (
   dimensions: number,
@@ -12,33 +13,29 @@ const run = (
   fitnessFun: keyof typeof testFunctionsSpecs
   childrenSelectionFun: keyof typeof childrenSelectionFuncs
   mutationProbability: number
-  population: Population
-  peaks: PopulationEntry[]
-}[][] => {
+  runs: ({iterations: number} & Stats)[]
+}[] => {
   const populationSize = getPopulationSize(dimensions)
 
   console.log('Population size', populationSize, 'dimensions', dimensions)
 
-  return _.times(10, i => {
-    console.log('\n===================================')
-    console.log('Test #', i + 1)
+  const startingIndividuals = _.times(10, () =>
+    generateStartingIndividuals({size: populationSize, dimensions}),
+  )
 
-    return withTime('Test', () => {
-      const startingIndividuals = generateStartingIndividuals({size: populationSize, dimensions})
-
-      return _.flatMap(
-        testFunctionsSpecs,
-        withTimeF('Test function', testFunctionSpec => {
-          console.log('\n----------------------------')
-          return runTestFunction(startingIndividuals, testFunctionSpec)
-        }),
-      )
-    })
-  })
+  return withTime('Test', () =>
+    _.flatMap(
+      testFunctionsSpecs,
+      withTimeF('Test function', testFunctionSpec => {
+        console.log('\n----------------------------')
+        return runTestFunction(startingIndividuals, testFunctionSpec)
+      }),
+    ),
+  )
 }
 
 const runTestFunction = (
-  startingIndividuals: Individual[],
+  startingIndividuals: Individual[][],
   testFunctionSpec: testFunctionsSpecs.TestFunctionSpec,
 ) =>
   _.flatMap(
@@ -55,21 +52,24 @@ const runTestFunction = (
             mutationProbability,
           )
 
-          const finalPopulation = runEvolution(startingIndividuals, {
-            testFunctionSpec,
-            childrenSelectionConfig,
-            mutationProbability,
-          })
-
-          const peaks = determinePeaks(finalPopulation)
-          console.log('Peaks', peaks)
-
           return {
             fitnessFun: testFunctionSpec.name as keyof typeof testFunctionsSpecs,
             childrenSelectionFun: childrenSelectionConfig.name as keyof typeof childrenSelectionFuncs,
             mutationProbability,
-            population: finalPopulation,
-            peaks,
+            runs: startingIndividuals.map((ind, idx) => {
+              console.log('\n---------------')
+              console.log('Test', idx + 1)
+              const res = runEvolution(ind, {
+                testFunctionSpec,
+                childrenSelectionConfig,
+                mutationProbability,
+              })
+
+              const seeds = determineSeeds(res.finalPopulation)
+              console.log('Seeds', seeds)
+
+              return {iterations: res.iterations, ...getStats({seeds, testFunctionSpec})}
+            }),
           }
         }),
       ),
