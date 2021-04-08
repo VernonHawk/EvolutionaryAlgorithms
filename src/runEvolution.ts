@@ -22,7 +22,8 @@ const runEvolution = (
   let standardDeviation = BASE_STANDARD_DEVIATION
 
   const convergency = makeConvergencyTracker({initialPopulation: currentPopulation})
-  const healthLimits = makeHealthLimitsTracker()
+  const healthLimits = makeHealthLimitsTracker(currentPopulation)
+
   const dimensions = startingIndividuals[0].length
 
   let iterations = 0
@@ -38,17 +39,13 @@ const runEvolution = (
       console.time(`${PRINT_GAP} iterations time`)
     }
 
-    if (childrenSelectionConfig.needsMinMaxHealth) {
-      healthLimits.processPopulation(currentPopulation)
-
-      if (shouldPrint) {
-        console.log(
-          'Min history health',
-          healthLimits.minHealth,
-          '- Max history health',
-          healthLimits.maxHealth,
-        )
-      }
+    if (shouldPrint) {
+      console.log(
+        'Min history health',
+        healthLimits.minHealth,
+        '- Max history health',
+        healthLimits.maxHealth,
+      )
     }
 
     if (iterations % STANDARD_DEVIATION_GAP === 0) {
@@ -57,7 +54,7 @@ const runEvolution = (
       if (shouldPrint) console.log('Standard deviation', standardDeviation)
     }
 
-    const parents = pickParents(currentPopulation, startingIndividuals.length)
+    const parents = pickParents(currentPopulation, startingIndividuals.length, healthLimits)
 
     const children = generateChildren({
       parents,
@@ -65,12 +62,12 @@ const runEvolution = (
       standardDeviation,
       testFunctionSpec,
     })
+    healthLimits.processPopulation(children)
 
     currentPopulation = childrenSelectionConfig.fun(
       [...parents, ...children],
       startingIndividuals.length,
-      healthLimits.minHealth,
-      healthLimits.maxHealth,
+      healthLimits,
     )
 
     convergency.processPopulation(currentPopulation)
@@ -81,7 +78,9 @@ const runEvolution = (
   return {finalPopulation: currentPopulation, iterations, didConverge: convergency.didConverge()}
 }
 
-export const makeHealthLimitsTracker = (): {
+export const makeHealthLimitsTracker = (
+  initialPopulation?: Population,
+): {
   processPopulation: (population: Population) => void
   minHealth: number
   maxHealth: number
@@ -89,11 +88,17 @@ export const makeHealthLimitsTracker = (): {
   let minHealth = 0
   let maxHealth = 0
 
+  const processPopulation = (population: Population) => {
+    minHealth = Math.min(minHealth, _.minBy(population, 'health')!.health)
+    maxHealth = Math.max(maxHealth, _.maxBy(population, 'health')!.health)
+  }
+
+  if (initialPopulation) {
+    processPopulation(initialPopulation)
+  }
+
   return {
-    processPopulation: population => {
-      minHealth = Math.min(minHealth, _.minBy(population, 'health')!.health)
-      maxHealth = Math.max(maxHealth, _.maxBy(population, 'health')!.health)
-    },
+    processPopulation,
     get minHealth() {
       return minHealth
     },

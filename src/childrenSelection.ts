@@ -2,26 +2,18 @@ import _ from 'lodash'
 import random from 'random'
 import {lowerBound, mutableSwapRemove, Population, PopulationEntry} from './common'
 
-export type ChildrenPickerConfig =
-  | {
-      name: string
-      fun: (population: Population, size: number) => Population
-      needsMinMaxHealth: false
-    }
-  | {
-      name: string
-      fun: (
-        population: Population,
-        size: number,
-        minHealth: number,
-        maxHealth: number,
-      ) => Population
-      needsMinMaxHealth: true
-    }
+export type ChildrenPickerConfig = {
+  name: string
+  fun: (
+    population: Population,
+    size: number,
+    health: {minHealth: number; maxHealth: number},
+  ) => Population
+}
 
 export const CROWD_TOUR: ChildrenPickerConfig = {
   name: 'CROWD_TOUR',
-  fun: (population, size) =>
+  fun: (population: Population, size: number) =>
     _.range(0, size).map(
       i =>
         _.maxBy(
@@ -34,34 +26,30 @@ export const CROWD_TOUR: ChildrenPickerConfig = {
           'health',
         )!,
     ),
-  needsMinMaxHealth: false,
 }
 
 export const ELITE: ChildrenPickerConfig = {
   name: 'ELITE',
-  fun: (population, size) =>
+  fun: (population: Population, size: number) =>
     _.take(
       population.slice().sort((a, b) => b.health - a.health),
       size,
     ),
-  needsMinMaxHealth: false,
 }
 
 export const ALL: ChildrenPickerConfig = {
   name: 'ALL',
-  fun: population => population,
-  needsMinMaxHealth: false,
+  fun: (population: Population) => population,
 }
 
 export const RAND: ChildrenPickerConfig = {
   name: 'RAND',
-  fun: (population, size) => _.sampleSize(population, size),
-  needsMinMaxHealth: false,
+  fun: (population: Population, size: number) => _.sampleSize(population, size),
 }
 
 export const FUDS: ChildrenPickerConfig = {
   name: 'FUDS',
-  fun: (population, size, minHealth, maxHealth) => {
+  fun: (population, size, {minHealth, maxHealth}) => {
     const groups = groupPopulation(population, minHealth, maxHealth)
 
     for (let currSize = population.length; currSize > size; ) {
@@ -84,12 +72,11 @@ export const FUDS: ChildrenPickerConfig = {
 
     return groups.flat()
   },
-  needsMinMaxHealth: true,
 }
 
 export const MOD_FUDS: ChildrenPickerConfig = {
   name: 'MOD_FUDS',
-  fun: (population, size, minHealth, maxHealth) => {
+  fun: (population, size, {minHealth, maxHealth}) => {
     const groups = groupPopulation(population, minHealth, maxHealth)
     groups.forEach(group => group.sort((a, b) => b.health - a.health))
 
@@ -111,7 +98,6 @@ export const MOD_FUDS: ChildrenPickerConfig = {
 
     return groups.flat()
   },
-  needsMinMaxHealth: true,
 }
 
 const groupPopulation = (
