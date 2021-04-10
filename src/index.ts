@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import {Individual, makeIndividual} from './common'
-import runEvolution from './runEvolution'
+import runEvolution, {AlgorithmConfig} from './runEvolution'
 import {specs, TestFunctionSpec} from './testFunctions'
 import * as childrenSelectionFuncs from './childrenSelection'
 import {withTime, withTimeF} from './common'
@@ -8,14 +8,16 @@ import determineSeeds from './determineSeeds'
 import getStats, {Stats} from './stats'
 import * as visualization from './visualization'
 
-const run = (
-  dimensions: number,
-): {
+type Res = {
   fitnessFun: keyof typeof specs
   childrenSelectionFun: keyof typeof childrenSelectionFuncs
   mutationProbability: number
-  runs: ({iterations: number} & Stats)[]
-}[] => {
+  runs: Run[]
+}
+
+type Run = {iterations: number} & Stats
+
+const run = (dimensions: number): Res[] => {
   const populationSize = getPopulationSize(dimensions)
 
   console.log('Population size', populationSize, 'dimensions', dimensions)
@@ -35,7 +37,10 @@ const run = (
   )
 }
 
-const runTestFunction = (startingIndividuals: Individual[][], testFunctionSpec: TestFunctionSpec) =>
+const runTestFunction = (
+  startingIndividuals: Individual[][],
+  testFunctionSpec: TestFunctionSpec,
+): Res[] =>
   _.flatMap(
     childrenSelectionFuncs,
     withTimeF('Children selection function', childrenSelectionConfig =>
@@ -54,38 +59,40 @@ const runTestFunction = (startingIndividuals: Individual[][], testFunctionSpec: 
             fitnessFun: testFunctionSpec.name,
             childrenSelectionFun: childrenSelectionConfig.name as keyof typeof childrenSelectionFuncs,
             mutationProbability,
-            runs: startingIndividuals.map((ind, idx) => {
-              const runNum = idx + 1
-              const config = {
-                testFunctionSpec,
-                childrenSelectionConfig,
-                mutationProbability,
-                runNum,
-              }
-
-              console.log('\n---------------')
-              console.log('Test', runNum)
-              const evolutionRes = runEvolution(ind, config)
-
-              const seeds = determineSeeds(evolutionRes.finalPopulation)
-              console.log('Seeds', seeds)
-
-              const stats = getStats({seeds, testFunctionSpec})
-
-              visualization.writeSvg({
-                ...config,
-                iteration: evolutionRes.iterations,
-                population: evolutionRes.finalPopulation,
-                peaks: visualization.processPeaks(stats),
-              })
-
-              return {iterations: evolutionRes.iterations, ...stats}
-            }),
+            runs: startingIndividuals.map(
+              makeEvolutionRunner({testFunctionSpec, childrenSelectionConfig, mutationProbability}),
+            ),
           }
         }),
       ),
     ),
   )
+
+const makeEvolutionRunner = (runConfig: Omit<AlgorithmConfig, 'runNum'>) => (
+  individual: Individual[],
+  idx: number,
+): Run => {
+  const runNum = idx + 1
+  const config = {...runConfig, runNum}
+
+  console.log('\n---------------')
+  console.log('Test', runNum)
+  const evolutionRes = runEvolution(individual, config)
+
+  const seeds = determineSeeds(evolutionRes.finalPopulation)
+  console.log('Seeds', seeds)
+
+  const stats = getStats({seeds, testFunctionSpec: runConfig.testFunctionSpec})
+
+  visualization.writeSvg({
+    ...config,
+    iteration: evolutionRes.iterations,
+    population: evolutionRes.finalPopulation,
+    peaks: visualization.processPeaks(stats),
+  })
+
+  return {iterations: evolutionRes.iterations, ...stats}
+}
 
 const generateStartingIndividuals = ({
   size,
