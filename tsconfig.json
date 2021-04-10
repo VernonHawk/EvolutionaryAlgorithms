@@ -7,6 +7,7 @@
     "noEmit": true,
     "strict": true,
     "noUnusedParameters": true,
+    "noUnusedLocals": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": false,
@@ -14,5 +15,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["./src", "./*.ts"]
+  "include": ["./src", "./*.ts"],
+  "exclude": ["node_modules"]
 }

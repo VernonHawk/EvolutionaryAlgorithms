@@ -3,6 +3,7 @@ import generateChildren from './childrenGeneration'
 import {ChildrenPickerConfig} from './childrenSelection'
 import {Individual, individualsToPopulation, Population} from './common'
 import {avgDistance} from './distance'
+import {writeSvg} from './visualization'
 import pickParents from './parentsSelection'
 import {makeConvergencyTracker, reachedIterationLimit} from './termination'
 import {TestFunctionSpec} from './testFunctions'
@@ -16,8 +17,10 @@ export type AlgorithmConfig = {
 
 const runEvolution = (
   startingIndividuals: readonly Individual[],
-  {testFunctionSpec, childrenSelectionConfig, mutationProbability}: AlgorithmConfig,
+  config: AlgorithmConfig,
 ): {finalPopulation: Population; iterations: number; didConverge: boolean} => {
+  const {testFunctionSpec, childrenSelectionConfig, mutationProbability} = config
+
   let currentPopulation = individualsToPopulation(startingIndividuals, testFunctionSpec.fun)
 
   let standardDeviation = BASE_STANDARD_DEVIATION
@@ -27,15 +30,17 @@ const runEvolution = (
 
   const dimensions = startingIndividuals[0].length
 
-  let iterations = 0
+  let iteration = 0
   for (
     ;
-    !(reachedIterationLimit({iterations, dimensions}) || convergency.didConverge());
-    ++iterations
+    !(reachedIterationLimit({iteration, dimensions}) || convergency.didConverge());
+    ++iteration
   ) {
-    const shouldPrint = iterations % PRINT_GAP === 0
+    writeSvg({...config, iteration: iteration, population: currentPopulation})
+
+    const shouldPrint = iteration % PRINT_GAP === 0
     if (shouldPrint) {
-      console.log('\nIteration', iterations)
+      console.log('\nIteration', iteration)
       console.timeEnd(`${PRINT_GAP} iterations time`)
       console.time(`${PRINT_GAP} iterations time`)
     }
@@ -49,7 +54,7 @@ const runEvolution = (
       )
     }
 
-    if (iterations % STANDARD_DEVIATION_GAP === 0) {
+    if (iteration % STANDARD_DEVIATION_GAP === 0) {
       standardDeviation = BASE_STANDARD_DEVIATION * avgDistance(currentPopulation)
 
       if (shouldPrint) console.log('Standard deviation', standardDeviation)
@@ -74,9 +79,13 @@ const runEvolution = (
     convergency.processPopulation(currentPopulation)
   }
 
-  console.log('\nStopped at iteration', iterations)
+  console.log('\nStopped at iteration', iteration)
 
-  return {finalPopulation: currentPopulation, iterations, didConverge: convergency.didConverge()}
+  return {
+    finalPopulation: currentPopulation,
+    iterations: iteration,
+    didConverge: convergency.didConverge(),
+  }
 }
 
 export const makeHealthLimitsTracker = (
@@ -114,6 +123,6 @@ const BASE_STANDARD_DEVIATION = 0.0625
 
 const STANDARD_DEVIATION_GAP = 60
 
-const PRINT_GAP = 3000
+const PRINT_GAP = 2500
 
 export default runEvolution

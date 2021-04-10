@@ -6,6 +6,7 @@ import * as childrenSelectionFuncs from './childrenSelection'
 import {withTime, withTimeF} from './common'
 import determineSeeds from './determineSeeds'
 import getStats, {Stats} from './stats'
+import * as visualization from './visualization'
 
 const run = (
   dimensions: number,
@@ -54,19 +55,31 @@ const runTestFunction = (startingIndividuals: Individual[][], testFunctionSpec: 
             childrenSelectionFun: childrenSelectionConfig.name as keyof typeof childrenSelectionFuncs,
             mutationProbability,
             runs: startingIndividuals.map((ind, idx) => {
-              console.log('\n---------------')
-              console.log('Test', idx + 1)
-              const res = runEvolution(ind, {
+              const runNum = idx + 1
+              const config = {
                 testFunctionSpec,
                 childrenSelectionConfig,
                 mutationProbability,
-                runNum: idx
-              })
+                runNum,
+              }
 
-              const seeds = determineSeeds(res.finalPopulation)
+              console.log('\n---------------')
+              console.log('Test', runNum)
+              const evolutionRes = runEvolution(ind, config)
+
+              const seeds = determineSeeds(evolutionRes.finalPopulation)
               console.log('Seeds', seeds)
 
-              return {iterations: res.iterations, ...getStats({seeds, testFunctionSpec})}
+              const stats = getStats({seeds, testFunctionSpec})
+
+              visualization.writeSvg({
+                ...config,
+                iteration: evolutionRes.iterations,
+                population: evolutionRes.finalPopulation,
+                peaks: visualization.processPeaks(stats),
+              })
+
+              return {iterations: evolutionRes.iterations, ...stats}
             }),
           }
         }),

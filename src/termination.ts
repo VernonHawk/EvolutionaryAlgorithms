@@ -3,7 +3,7 @@ import {Population} from './common'
 
 type ReachedIterationLimitAttrs = {
   dimensions: number
-  iterations: number
+  iteration: number
 }
 
 export const makeConvergencyTracker = ({
@@ -36,5 +36,5 @@ export const makeConvergencyTracker = ({
 
 export const reachedIterationLimit = ({
   dimensions,
-  iterations,
-}: ReachedIterationLimitAttrs): boolean => iterations >= (dimensions > 3 ? 400_000 : 40_000)
+  iteration,
+}: ReachedIterationLimitAttrs): boolean => iteration >= (dimensions > 3 ? 400_000 : 40_000)

@@ -12,6 +12,7 @@
     "canvas": "^2.7.0",
     "lodash": "^4.17.21",
     "random": "^3.0.3",
+    "synchronized-promise": "^0.3.1",
     "ts-brand": "^0.0.2",
     "vega": "^5.20.2"
   },

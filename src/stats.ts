@@ -6,6 +6,7 @@ import {FuncPeak, TestFunctionSpec} from './testFunctions'
 export type Stats = {
   foundGlobalPeaks: Peak[]
   foundLocalPeaks: Peak[]
+  falsePeaks: Peak[]
   NSeeds: number
   NP: number
   GP: number
@@ -28,9 +29,9 @@ const getStats = ({
   const NSeeds = seeds.length
   const peaks = generatePeaks(testFunctionSpec, dimensions)
 
-  const {foundGlobalPeaks, foundLocalPeaks} = verifySeeds(peaks, seeds)
-  const GP = foundGlobalPeaks.length
-  const LP = foundLocalPeaks.length
+  const {globalPeaks, localPeaks, falsePeaks} = verifySeeds(peaks, seeds)
+  const GP = globalPeaks.length
+  const LP = localPeaks.length
   const NP = GP + LP
 
   const {globalPeaksAmount, localPeaksAmount = 0} = _.countBy(peaks, peak =>
@@ -38,8 +39,9 @@ const getStats = ({
   )
 
   return {
-    foundGlobalPeaks,
-    foundLocalPeaks,
+    foundGlobalPeaks: globalPeaks,
+    foundLocalPeaks: localPeaks,
+    falsePeaks,
     NSeeds,
     NP,
     GP,
@@ -54,9 +56,10 @@ const getStats = ({
 const verifySeeds = (
   peaks: ({global: boolean} & PopulationEntry)[],
   seeds: Peak[],
-): {foundGlobalPeaks: Peak[]; foundLocalPeaks: Peak[]} => {
-  const foundGlobalPeaks: Peak[] = []
-  const foundLocalPeaks: Peak[] = []
+): {globalPeaks: Peak[]; localPeaks: Peak[]; falsePeaks: Peak[]} => {
+  const globalPeaks: Peak[] = []
+  const localPeaks: Peak[] = []
+  const falsePeaks: Peak[] = []
 
   seeds.forEach(seed => {
     const matchingPeak = peaks.find(
@@ -65,16 +68,19 @@ const verifySeeds = (
         distance(seed.individual, peak.individual) <= DISTANCE_TOLERANCE,
     )
 
-    if (matchingPeak) {
-      if (matchingPeak.global) {
-        foundGlobalPeaks.push(seed)
-      } else {
-        foundLocalPeaks.push(seed)
-      }
+    if (!matchingPeak) {
+      falsePeaks.push(seed)
+      return
+    }
+
+    if (matchingPeak.global) {
+      globalPeaks.push(seed)
+    } else {
+      localPeaks.push(seed)
     }
   })
 
-  return {foundGlobalPeaks, foundLocalPeaks}
+  return {globalPeaks, localPeaks, falsePeaks}
 }
 
 // sigma
