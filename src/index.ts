@@ -17,12 +17,14 @@ type Res = {
 
 type Run = {iterations: number} & Stats
 
+const TEST_RUNS = 3
+
 const run = (dimensions: number): Res[] => {
   const populationSize = getPopulationSize(dimensions)
 
   console.log('Population size', populationSize, 'dimensions', dimensions)
 
-  const startingIndividuals = _.times(10, () =>
+  const startingIndividuals = _.times(TEST_RUNS, () =>
     generateStartingIndividuals({size: populationSize, dimensions}),
   )
 
