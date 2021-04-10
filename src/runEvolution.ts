@@ -7,10 +7,11 @@ import pickParents from './parentsSelection'
 import {makeConvergencyTracker, reachedIterationLimit} from './termination'
 import {TestFunctionSpec} from './testFunctions'
 
-type AlgorithmConfig = {
+export type AlgorithmConfig = {
   testFunctionSpec: TestFunctionSpec
   childrenSelectionConfig: ChildrenPickerConfig
   mutationProbability: number
+  runNum: number
 }
 
 const runEvolution = (

@@ -1,25 +1,11 @@
-import _ from 'lodash'
-import {Gene, Individual, makeGene} from './common'
-
-export type TestFunction = (individual: Individual) => number
-export type TestFunctionSpec = {
-  name: string
-  fun: TestFunction
-  argClamp: ArgClamp
-  peaks: FuncPeak[]
-}
-
-export type FuncPeak = {x: number; locality: 'global' | 'local'}
-
-type ArgClamp = (arg: Gene) => Gene
-const zeroToOneClamp: ArgClamp = arg => makeGene(_.clamp(arg, 0, 1))
+import {TestFunctionSpec} from '../common'
 
 export const deba1: TestFunctionSpec = {
   name: 'deba1',
   fun: individual =>
     individual.reduce((acc, curr) => acc + Math.pow(Math.sin(5 * Math.PI * curr), 6), 0) /
     individual.length,
-  argClamp: zeroToOneClamp,
+  argRange: {min: 0, max: 1},
   peaks: [
     {x: 0.1, locality: 'global'},
     {x: 0.3, locality: 'global'},
@@ -39,7 +25,7 @@ export const deba2: TestFunctionSpec = {
           Math.pow(Math.sin(5 * Math.PI * curr), 6),
       0,
     ) / individual.length,
-  argClamp: zeroToOneClamp,
+  argRange: {min: 0, max: 1},
   peaks: [
     {x: 0.1, locality: 'global'},
     {x: 0.3, locality: 'local'},
@@ -56,7 +42,7 @@ export const deba3: TestFunctionSpec = {
       (acc, curr) => acc + Math.pow(Math.sin(5 * Math.PI * (Math.pow(curr, 0.75) - 0.05)), 6),
       0,
     ) / individual.length,
-  argClamp: zeroToOneClamp,
+  argRange: {min: 0, max: 1},
   peaks: [
     {x: 0.08, locality: 'global'},
     {x: 0.247, locality: 'global'},
@@ -76,7 +62,7 @@ export const deba4: TestFunctionSpec = {
           Math.pow(Math.sin(5 * Math.PI * (Math.pow(curr, 0.75) - 0.05)), 6),
       0,
     ) / individual.length,
-  argClamp: zeroToOneClamp,
+  argRange: {min: 0, max: 1},
   peaks: [
     {x: 0.08, locality: 'global'},
     {x: 0.247, locality: 'local'},

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import {Individual, makeIndividual} from './common'
 import runEvolution from './runEvolution'
-import * as testFunctionsSpecs from './testFunctions'
+import {specs, TestFunctionSpec} from './testFunctions'
 import * as childrenSelectionFuncs from './childrenSelection'
 import {withTime, withTimeF} from './common'
 import determineSeeds from './determineSeeds'
@@ -10,7 +10,7 @@ import getStats, {Stats} from './stats'
 const run = (
   dimensions: number,
 ): {
-  fitnessFun: keyof typeof testFunctionsSpecs
+  fitnessFun: keyof typeof specs
   childrenSelectionFun: keyof typeof childrenSelectionFuncs
   mutationProbability: number
   runs: ({iterations: number} & Stats)[]
@@ -23,9 +23,9 @@ const run = (
     generateStartingIndividuals({size: populationSize, dimensions}),
   )
 
-  return withTime('Test', () =>
+  return withTime('Full run', () =>
     _.flatMap(
-      testFunctionsSpecs,
+      specs,
       withTimeF('Test function', testFunctionSpec => {
         console.log('\n----------------------------')
         return runTestFunction(startingIndividuals, testFunctionSpec)
@@ -34,10 +34,7 @@ const run = (
   )
 }
 
-const runTestFunction = (
-  startingIndividuals: Individual[][],
-  testFunctionSpec: testFunctionsSpecs.TestFunctionSpec,
-) =>
+const runTestFunction = (startingIndividuals: Individual[][], testFunctionSpec: TestFunctionSpec) =>
   _.flatMap(
     childrenSelectionFuncs,
     withTimeF('Children selection function', childrenSelectionConfig =>
@@ -53,7 +50,7 @@ const runTestFunction = (
           )
 
           return {
-            fitnessFun: testFunctionSpec.name as keyof typeof testFunctionsSpecs,
+            fitnessFun: testFunctionSpec.name,
             childrenSelectionFun: childrenSelectionConfig.name as keyof typeof childrenSelectionFuncs,
             mutationProbability,
             runs: startingIndividuals.map((ind, idx) => {
@@ -63,6 +60,7 @@ const runTestFunction = (
                 testFunctionSpec,
                 childrenSelectionConfig,
                 mutationProbability,
+                runNum: idx
               })
 
               const seeds = determineSeeds(res.finalPopulation)

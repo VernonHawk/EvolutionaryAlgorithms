@@ -25,7 +25,10 @@ const generateChildren = ({
           parent.individual.map(
             geneMutation({
               normalDistribution,
-              clamp: testFunctionSpec.argClamp,
+              clamp: gene =>
+                makeGene(
+                  _.clamp(gene, testFunctionSpec.argRange.min, testFunctionSpec.argRange.max),
+                ),
               mutationProbability,
             }),
           ),
