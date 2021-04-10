@@ -18,6 +18,7 @@ export const writeSvg = sp(
         fs.writeFileSync(path, svg)
       })
       .catch(console.error),
+      {tick: 2}
 )
 
 const makePath = (config: Omit<Config, 'population' | 'peaks'>): string =>

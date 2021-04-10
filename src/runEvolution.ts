@@ -36,7 +36,9 @@ const runEvolution = (
     !(reachedIterationLimit({iteration, dimensions}) || convergency.didConverge());
     ++iteration
   ) {
-    writeSvg({...config, iteration: iteration, population: currentPopulation})
+    if (iteration % 2 === 0) {
+      writeSvg({...config, iteration: iteration, population: currentPopulation})
+    }
 
     const shouldPrint = iteration % PRINT_GAP === 0
     if (shouldPrint) {
@@ -123,6 +125,6 @@ const BASE_STANDARD_DEVIATION = 0.0625
 
 const STANDARD_DEVIATION_GAP = 60
 
-const PRINT_GAP = 2500
+const PRINT_GAP = 1000
 
 export default runEvolution
