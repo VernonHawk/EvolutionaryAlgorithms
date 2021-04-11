@@ -64,13 +64,10 @@ export const generateFunDimSheet = (functionSpec: TestFunctionSpec, dimension: n
     _.range(headerRowsAmount + 1, configRows.length + headerRowsAmount + 1).forEach(row =>
       _.range(1, aggregatableCriteria.length + 1).forEach(col => {
         const colIdx = runsEnd + topColIdx * aggregatableCriteria.length + col
+        const criteriaCells = getCriteriaCells(worksheet, row, col).join(',')
 
         worksheet.getCell(row, colIdx).value = {
-          formula: `${topColIdx === 0 ? 'AVERAGE' : 'MAX'}(${getCriteriaCells(
-            worksheet,
-            row,
-            col,
-          ).join(',')})`,
+          formula: `${topColIdx === 0 ? 'AVERAGE' : 'MAX'}(${criteriaCells})`,
           date1904: true,
         }
       }),
@@ -81,7 +78,7 @@ export const generateFunDimSheet = (functionSpec: TestFunctionSpec, dimension: n
   _.range(headerRowsAmount + 1, configRows.length + headerRowsAmount + 1).forEach(
     row =>
       (worksheet.getCell(row, _.last(worksheet.columns)!.number).value = {
-        formula: `AVERAGE(${getCriteriaCells(worksheet, row, runCriteria.length).join(',')})`,
+        formula: `AVERAGE(${getSucRunCells(worksheet, row).join(',')})`,
         date1904: true,
       }),
   )
@@ -119,3 +116,6 @@ const getCriteriaCells = (
     runIdx =>
       worksheet.getColumn(1 + runIdx * runCriteria.length + relativeColumn).letter + absoluteRow,
   )
+
+const getSucRunCells = (worksheet: Worksheet, row: number): string[] =>
+  getCriteriaCells(worksheet, row, runCriteria.length)

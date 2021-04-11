@@ -24,7 +24,7 @@ export const writeFunDim = (
   _.range(startColIdx, startColIdx + runCriteria.length).forEach(colIdx => {
     const res = results[runCriteria[colIdx - startColIdx]]
 
-    row.getCell(colIdx).value = typeof res === 'boolean' ? Number(res) : res
+    row.getCell(colIdx).value = typeof res === 'boolean' ? Number(res) : Number(res.toFixed(6))
   })
 
   writeSheet(workbook, path)
