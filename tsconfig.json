@@ -6,7 +6,7 @@
     "moduleResolution": "node",
     "noEmit": true,
     "strict": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noUnusedLocals": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,

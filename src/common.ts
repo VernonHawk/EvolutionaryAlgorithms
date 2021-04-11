@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import fs from 'fs'
 import {Brand, make} from 'ts-brand'
 import {TestFunction} from './testFunctions'
 
@@ -76,3 +77,6 @@ export const mutableSwapRemove = <T>(array: T[], idx: number): void => {
   array[idx] = _.last(array)!
   array.pop()
 }
+
+export const makeFilePath = (path: string): void =>
+  void fs.mkdirSync(path.slice(0, path.lastIndexOf('/')), {recursive: true})

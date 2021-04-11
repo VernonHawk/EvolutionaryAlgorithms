@@ -4,18 +4,18 @@ import {distance} from './distance'
 import {FuncPeak, TestFunctionSpec} from './testFunctions'
 
 export type Stats = {
-  foundGlobalPeaks: Peak[]
-  foundLocalPeaks: Peak[]
-  falsePeaks: Peak[]
-  NSeeds: number
-  NP: number
-  GP: number
-  LP: number
-  PR: number
-  GPR: number
-  LPR: number
-  FPR: number
-  lowestPeak: number
+  mainStats: {
+    NSeeds: number
+    NP: number
+    GP: number
+    LP: number
+    PR: number
+    GPR: number
+    LPR: number
+    FPR: number
+    LowestPeak: number
+  }
+  additionalStats: {foundGlobalPeaks: Peak[]; foundLocalPeaks: Peak[]; falsePeaks: Peak[]}
 }
 
 const getStats = ({
@@ -40,18 +40,18 @@ const getStats = ({
   )
 
   return {
-    foundGlobalPeaks: globalPeaks,
-    foundLocalPeaks: localPeaks,
-    falsePeaks,
-    NSeeds,
-    NP,
-    GP,
-    LP,
-    PR: NP / peaks.length,
-    GPR: GP / globalPeaksAmount,
-    LPR: localPeaksAmount ? LP / localPeaksAmount : 0,
-    FPR: (NSeeds - NP) / NSeeds,
-    lowestPeak: determineLowestFoundPeak({globalPeaks, localPeaks}),
+    additionalStats: {foundGlobalPeaks: globalPeaks, foundLocalPeaks: localPeaks, falsePeaks},
+    mainStats: {
+      NSeeds,
+      NP,
+      GP,
+      LP,
+      PR: NP / peaks.length,
+      GPR: GP / globalPeaksAmount,
+      LPR: localPeaksAmount ? LP / localPeaksAmount : 0,
+      FPR: (NSeeds - NP) / NSeeds,
+      LowestPeak: determineLowestFoundPeak({globalPeaks, localPeaks}),
+    },
   }
 }
 

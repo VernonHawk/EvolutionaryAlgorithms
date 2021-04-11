@@ -8,17 +8,18 @@ import determineSeeds from './determineSeeds'
 import getStats, {Stats} from './stats'
 import * as visualization from './visualization'
 import {CHILDREN_TO_GENERATE, MUTATION_PROBABILITIES} from './childrenGeneration'
+import {writeRunResults} from './sheets'
 
-type Res = {
+type FullResult = {
   fitnessFun: keyof typeof specs
   childrenSelectionFun: keyof typeof childrenSelectionFuncs
   mutationProbability: number
-  runs: Run[]
+  runs: RunResult[]
 }
 
-type Run = {iterations: number; NFE: number; SucRun: boolean} & Stats
+export type RunResult = {Iterations: number; NFE: number; SucRun: boolean} & Stats['mainStats']
 
-const run = (dimensions: number): Res[] => {
+const run = (dimensions: number): FullResult[] => {
   const populationSize = getPopulationSize(dimensions)
 
   console.log('Population size', populationSize, 'dimensions', dimensions)
@@ -41,7 +42,7 @@ const run = (dimensions: number): Res[] => {
 const runTestFunction = (
   startingIndividuals: Individual[][],
   testFunctionSpec: TestFunctionSpec,
-): Res[] =>
+): FullResult[] =>
   _.flatMap(
     childrenSelectionFuncs,
     withTimeF('Children selection function', childrenSelectionConfig =>
@@ -72,7 +73,7 @@ const runTestFunction = (
 const makeEvolutionRunner = (runConfig: Omit<AlgorithmConfig, 'runNum'>) => (
   startingIndividuals: Individual[],
   idx: number,
-): Run => {
+): RunResult => {
   const runNum = idx + 1
   const config = {...runConfig, runNum}
 
@@ -85,7 +86,7 @@ const makeEvolutionRunner = (runConfig: Omit<AlgorithmConfig, 'runNum'>) => (
 
   const stats = getStats({seeds, testFunctionSpec: runConfig.testFunctionSpec})
 
-  const processedPeaks = visualization.processPeaks(stats)
+  const processedPeaks = visualization.processPeaks(stats.additionalStats)
   visualization.writeSvg({
     ...config,
     iteration: evolutionRes.iterations,
@@ -100,12 +101,16 @@ const makeEvolutionRunner = (runConfig: Omit<AlgorithmConfig, 'runNum'>) => (
     peaks: processedPeaks,
   })
 
-  return {
-    iterations: evolutionRes.iterations,
+  const results = {
+    Iterations: evolutionRes.iterations,
     NFE: evolutionRes.iterations * startingIndividuals.length * CHILDREN_TO_GENERATE,
     SucRun: evolutionRes.didConverge,
-    ...stats,
+    ...stats.mainStats,
   }
+
+  writeRunResults(startingIndividuals[0].length, config, results)
+
+  return results
 }
 
 const generateStartingIndividuals = ({

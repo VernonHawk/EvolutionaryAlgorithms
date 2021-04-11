@@ -4,7 +4,7 @@ import path from 'path'
 import sp from 'synchronized-promise'
 import {functionData} from './testFunctions'
 import {AlgorithmConfig} from './runEvolution'
-import {Peak, Population} from './common'
+import {makeFilePath, Peak, Population} from './common'
 
 type Config = AlgorithmConfig & {iteration: number | string; population: Population; peaks?: Peak[]}
 
@@ -14,7 +14,8 @@ export const writeSvg = sp(
       .toSVG()
       .then(svg => {
         const path = makePath(config)
-        fs.mkdirSync(path.slice(0, path.lastIndexOf('/')), {recursive: true})
+
+        makeFilePath(path)
         fs.writeFileSync(path, svg)
       })
       .catch(console.error),
