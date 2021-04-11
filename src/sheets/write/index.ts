@@ -3,11 +3,11 @@ import {AlgorithmConfig} from '../../runEvolution'
 import {writeFunDim} from './funDim'
 
 export const writeRunResults = (
-  dimension: number,
+  dimensions: number,
   config: AlgorithmConfig,
   results: RunResult,
 ): void => {
-  writeFunDim(dimension, config, results)
+  writeFunDim(dimensions, config, results)
 
   // const parser = new Parser()
 

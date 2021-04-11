@@ -7,11 +7,11 @@ import {readSheet, writeSheet} from './common'
 import {generateFunDimSheet, headerRowsAmount, runCriteria} from './generate/funDim'
 
 export const writeRunResults = (
-  dimension: number,
+  dimensions: number,
   config: AlgorithmConfig,
   results: RunResult,
 ): void => {
-  const path = generateFunDimSheet(config.testFunctionSpec, dimension)
+  const path = generateFunDimSheet(config.testFunctionSpec, dimensions)
 
   const workbook = readSheet(path)
   const worksheet = workbook.worksheets[0]

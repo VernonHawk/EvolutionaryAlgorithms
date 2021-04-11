@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node --files index.ts"
+    "start": "ts-node --files index.ts",
+    "start-pl": "./runParallel.sh"
   },
   "author": "Ihor Morenets",
   "license": "ISC",

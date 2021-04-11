@@ -1,11 +1,6 @@
 import _ from 'lodash'
 import {Population} from './common'
 
-type ReachedIterationLimitAttrs = {
-  dimensions: number
-  iteration: number
-}
-
 export const makeConvergencyTracker = ({
   initialPopulation,
   notChangingLimit = 10,
@@ -39,7 +34,15 @@ export const makeConvergencyTracker = ({
   }
 }
 
+type ReachedIterationLimitAttrs = {
+  dimensions: number
+  iteration: number
+  runNum: number
+}
+
 export const reachedIterationLimit = ({
   dimensions,
   iteration,
-}: ReachedIterationLimitAttrs): boolean => iteration >= (dimensions > 3 ? 400_000 : 20_000)
+  runNum,
+}: ReachedIterationLimitAttrs): boolean =>
+  iteration >= (dimensions > 3 ? 400_000 : runNum === 1 ? 40_000 : 10_000)

@@ -33,7 +33,7 @@ const runEvolution = (
   let iteration = 0
   for (
     ;
-    !(reachedIterationLimit({iteration, dimensions}) || convergency.didConverge());
+    !(reachedIterationLimit({iteration, dimensions, runNum}) || convergency.didConverge());
     ++iteration
   ) {
     if (dimensions === 1 && runNum === 1 && shouldTakeSnapshot(iteration)) {
@@ -104,16 +104,16 @@ const shouldTakeSnapshot = (iteration: number) => {
     return iteration % 10 === 0
   }
 
-  if (iteration <= 5000) {
+  if (iteration <= 5_000) {
     return iteration % 100 === 0
   }
 
-  if (iteration <= 15000) {
+  if (iteration <= 15_000) {
     return iteration % 1000 === 0
   }
 
-  if (iteration <= 30000) {
-    return iteration % 5000 === 0
+  if (iteration <= 30_000) {
+    return iteration % 5_000 === 0
   }
 
   return false
@@ -154,6 +154,6 @@ const BASE_STANDARD_DEVIATION = 0.0625
 
 const STANDARD_DEVIATION_GAP = 60
 
-const PRINT_GAP = 2500
+const PRINT_GAP = 3000
 
 export default runEvolution

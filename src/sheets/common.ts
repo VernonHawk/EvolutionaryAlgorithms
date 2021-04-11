@@ -12,10 +12,10 @@ export const writeSheet = (workbook: Workbook, path: string, tick = 1): void =>
 export const readSheet = (path: string, tick = 1): Workbook =>
   sp(() => new ExcelJS.Workbook().xlsx.readFile(path), {tick})()
 
-export const getPath = (functionSpec: TestFunctionSpec, dimension: number): string =>
+export const getPath = (functionSpec: TestFunctionSpec, dimensions: number): string =>
   path.resolve(
     __dirname,
-    `../../results/${functionSpec.name}/Fun_${functionSpec.name}__Dim_${dimension}.xlsx`,
+    `../../results/${functionSpec.name}/Fun_${functionSpec.name}__Dim_${dimensions}.xlsx`,
   )
 
 export const emptyCols = (num: number): Partial<Column>[] =>

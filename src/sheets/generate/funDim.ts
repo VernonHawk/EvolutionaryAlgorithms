@@ -13,8 +13,8 @@ export const generateFunDimSheets = (dimensions: number[], functions = specs): v
 
 const RUNS = 10
 
-export const generateFunDimSheet = (functionSpec: TestFunctionSpec, dimension: number): string => {
-  const sheetPath = getPath(functionSpec, dimension)
+export const generateFunDimSheet = (functionSpec: TestFunctionSpec, dimensions: number): string => {
+  const sheetPath = getPath(functionSpec, dimensions)
 
   if (fs.existsSync(sheetPath)) {
     return sheetPath
