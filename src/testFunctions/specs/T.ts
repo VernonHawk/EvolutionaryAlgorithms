@@ -1,7 +1,7 @@
 import {TestFunctionSpec} from '../common'
 
-export const deba1: TestFunctionSpec = {
-  name: 'deba1',
+export const F15_deba1: TestFunctionSpec = {
+  name: 'F15_deba1',
   fun: individual =>
     individual.reduce((acc, curr) => acc + Math.pow(Math.sin(5 * Math.PI * curr), 6), 0) /
     individual.length,
@@ -15,8 +15,8 @@ export const deba1: TestFunctionSpec = {
   ],
 }
 
-export const deba2: TestFunctionSpec = {
-  name: 'deba2',
+export const F16_deba2: TestFunctionSpec = {
+  name: 'F16_deba2',
   fun: individual =>
     individual.reduce(
       (acc, curr) =>
@@ -35,8 +35,8 @@ export const deba2: TestFunctionSpec = {
   ],
 }
 
-export const deba3: TestFunctionSpec = {
-  name: 'deba3',
+export const F18_deba3: TestFunctionSpec = {
+  name: 'F18_deba3',
   fun: individual =>
     individual.reduce(
       (acc, curr) => acc + Math.pow(Math.sin(5 * Math.PI * (Math.pow(curr, 0.75) - 0.05)), 6),
@@ -52,8 +52,8 @@ export const deba3: TestFunctionSpec = {
   ],
 }
 
-export const deba4: TestFunctionSpec = {
-  name: 'deba4',
+export const F19_deba4: TestFunctionSpec = {
+  name: 'F19_deba4',
   fun: individual =>
     individual.reduce(
       (acc, curr) =>

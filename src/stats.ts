@@ -15,6 +15,7 @@ export type Stats = {
   GPR: number
   LPR: number
   FPR: number
+  lowestPeak: number
 }
 
 const getStats = ({
@@ -50,7 +51,21 @@ const getStats = ({
     GPR: GP / globalPeaksAmount,
     LPR: localPeaksAmount ? LP / localPeaksAmount : 0,
     FPR: (NSeeds - NP) / NSeeds,
+    lowestPeak: determineLowestFoundPeak({globalPeaks, localPeaks}),
   }
+}
+
+const determineLowestFoundPeak = ({
+  globalPeaks,
+  localPeaks,
+}: {
+  globalPeaks: Peak[]
+  localPeaks: Peak[]
+}): number => {
+  const localMin = _.minBy(localPeaks, 'health')?.health ?? Infinity
+  const globalMin = globalPeaks[0]?.health ?? localMin
+
+  return Math.min(localMin, globalMin)
 }
 
 const verifySeeds = (

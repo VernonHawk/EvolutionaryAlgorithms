@@ -51,5 +51,7 @@ const geneMutation = ({normalDistribution, mutationProbability, clamp}: Mutation
 
 // L
 export const CHILDREN_TO_GENERATE = 3
+// Pm
+export const MUTATION_PROBABILITIES = [0.15, 0.75]
 
 export default generateChildren

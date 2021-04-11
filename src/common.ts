@@ -2,6 +2,8 @@ import _ from 'lodash'
 import {Brand, make} from 'ts-brand'
 import {TestFunction} from './testFunctions'
 
+export const TEST_RUNS = 5
+
 export type Health = Brand<number, 'Health'>
 export const makeHealth = make<Health>()
 

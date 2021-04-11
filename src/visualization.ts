@@ -25,7 +25,7 @@ const makePath = (config: Omit<Config, 'population' | 'peaks'>): string =>
   path.resolve(
     __dirname,
     '../results',
-    `f_${config.testFunctionSpec.name}`,
+    config.testFunctionSpec.name,
     `c_${config.childrenSelectionConfig.name}`,
     `m_${config.mutationProbability.toString()}`,
     `r_${config.runNum.toString()}`,

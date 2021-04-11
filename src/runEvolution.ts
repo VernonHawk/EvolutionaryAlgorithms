@@ -36,7 +36,7 @@ const runEvolution = (
     !(reachedIterationLimit({iteration, dimensions}) || convergency.didConverge());
     ++iteration
   ) {
-    if (runNum === 1 && shouldTakeSnapshot(iteration)) {
+    if (dimensions === 1 && runNum === 1 && shouldTakeSnapshot(iteration)) {
       writeSvg({...config, iteration, population: currentPopulation})
     }
 

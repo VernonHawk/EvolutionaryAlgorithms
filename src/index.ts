@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {Individual, makeIndividual} from './common'
+import {Individual, makeIndividual, TEST_RUNS} from './common'
 import runEvolution, {AlgorithmConfig} from './runEvolution'
 import {specs, TestFunctionSpec} from './testFunctions'
 import * as childrenSelectionFuncs from './childrenSelection'
@@ -7,7 +7,7 @@ import {withTime, withTimeF} from './common'
 import determineSeeds from './determineSeeds'
 import getStats, {Stats} from './stats'
 import * as visualization from './visualization'
-import {CHILDREN_TO_GENERATE} from './childrenGeneration'
+import {CHILDREN_TO_GENERATE, MUTATION_PROBABILITIES} from './childrenGeneration'
 
 type Res = {
   fitnessFun: keyof typeof specs
@@ -16,9 +16,7 @@ type Res = {
   runs: Run[]
 }
 
-type Run = {iterations: number; NFE: number} & Stats
-
-const TEST_RUNS = 3
+type Run = {iterations: number; NFE: number; SucRun: boolean} & Stats
 
 const run = (dimensions: number): Res[] => {
   const populationSize = getPopulationSize(dimensions)
@@ -105,6 +103,7 @@ const makeEvolutionRunner = (runConfig: Omit<AlgorithmConfig, 'runNum'>) => (
   return {
     iterations: evolutionRes.iterations,
     NFE: evolutionRes.iterations * startingIndividuals.length * CHILDREN_TO_GENERATE,
+    SucRun: evolutionRes.didConverge,
     ...stats,
   }
 }
@@ -119,8 +118,5 @@ const generateStartingIndividuals = ({
   _.times(size, () => makeIndividual(_.times(dimensions, () => _.random(0, 1, true))))
 
 const getPopulationSize = (dimensions: number): number => (dimensions <= 3 ? 500 : 5000)
-
-// Pm
-const MUTATION_PROBABILITIES = [0.15, 0.75]
 
 export default run
