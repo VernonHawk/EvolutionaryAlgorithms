@@ -14,7 +14,11 @@ export const makeConvergencyTracker = ({
   initialPopulation?: Population
   notChangingLimit?: number
   tolerance?: number
-}): {processPopulation: (population: Population) => void; didConverge: () => boolean} => {
+}): {
+  processPopulation: (population: Population) => void
+  didConverge: () => boolean
+  getState: () => {avgHealth: number; avgHealthNotChangingIterations: number}
+} => {
   let avgHealth = initialPopulation ? _.meanBy(initialPopulation, 'health') : 0
   let avgHealthNotChangingIterations = 0
 
@@ -31,10 +35,11 @@ export const makeConvergencyTracker = ({
       avgHealth = newAvgHealth
     },
     didConverge: () => avgHealthNotChangingIterations === notChangingLimit,
+    getState: () => ({avgHealth, avgHealthNotChangingIterations}),
   }
 }
 
 export const reachedIterationLimit = ({
   dimensions,
   iteration,
-}: ReachedIterationLimitAttrs): boolean => iteration >= (dimensions > 3 ? 400_000 : 40_000)
+}: ReachedIterationLimitAttrs): boolean => iteration >= (dimensions > 3 ? 400_000 : 20_000)

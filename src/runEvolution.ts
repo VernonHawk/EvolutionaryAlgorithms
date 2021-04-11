@@ -19,7 +19,7 @@ const runEvolution = (
   startingIndividuals: readonly Individual[],
   config: AlgorithmConfig,
 ): {finalPopulation: Population; iterations: number; didConverge: boolean} => {
-  const {testFunctionSpec, childrenSelectionConfig, mutationProbability} = config
+  const {testFunctionSpec, childrenSelectionConfig, mutationProbability, runNum} = config
 
   let currentPopulation = individualsToPopulation(startingIndividuals, testFunctionSpec.fun)
 
@@ -36,7 +36,7 @@ const runEvolution = (
     !(reachedIterationLimit({iteration, dimensions}) || convergency.didConverge());
     ++iteration
   ) {
-    if (iteration % Math.pow(Math.ceil(iteration / 500), 2) === 0) {
+    if (runNum === 1 && shouldTakeSnapshot(iteration)) {
       writeSvg({...config, iteration, population: currentPopulation})
     }
 
@@ -45,9 +45,6 @@ const runEvolution = (
       console.log('\nIteration', iteration)
       console.timeEnd(`${PRINT_GAP} iterations time`)
       console.time(`${PRINT_GAP} iterations time`)
-    }
-
-    if (shouldPrint) {
       console.log(
         'Min history health',
         healthLimits.minHealth,
@@ -73,12 +70,16 @@ const runEvolution = (
     healthLimits.processPopulation(children)
 
     currentPopulation = childrenSelectionConfig.fun(
-      [...parents, ...children],
+      [...(childrenSelectionConfig.worksWithParents ? parents : currentPopulation), ...children],
       startingIndividuals.length,
       healthLimits,
     )
 
     convergency.processPopulation(currentPopulation)
+
+    if (shouldPrint) {
+      console.log('Convergency', convergency.getState())
+    }
   }
 
   console.log('\nStopped at iteration', iteration)
@@ -88,6 +89,34 @@ const runEvolution = (
     iterations: iteration,
     didConverge: convergency.didConverge(),
   }
+}
+
+const shouldTakeSnapshot = (iteration: number) => {
+  if (iteration <= 300) {
+    return true
+  }
+
+  if (iteration <= 600) {
+    return iteration % 3 === 0
+  }
+
+  if (iteration <= 1000) {
+    return iteration % 10 === 0
+  }
+
+  if (iteration <= 5000) {
+    return iteration % 100 === 0
+  }
+
+  if (iteration <= 15000) {
+    return iteration % 1000 === 0
+  }
+
+  if (iteration <= 30000) {
+    return iteration % 5000 === 0
+  }
+
+  return false
 }
 
 export const makeHealthLimitsTracker = (

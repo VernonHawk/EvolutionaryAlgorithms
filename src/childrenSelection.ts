@@ -9,6 +9,7 @@ export type ChildrenPickerConfig = {
     size: number,
     health: {minHealth: number; maxHealth: number},
   ) => Population
+  worksWithParents: boolean
 }
 
 export const CROWD_TOUR: ChildrenPickerConfig = {
@@ -26,6 +27,7 @@ export const CROWD_TOUR: ChildrenPickerConfig = {
           'health',
         )!,
     ),
+  worksWithParents: true,
 }
 
 export const ELITE: ChildrenPickerConfig = {
@@ -35,16 +37,19 @@ export const ELITE: ChildrenPickerConfig = {
       population.slice().sort((a, b) => b.health - a.health),
       size,
     ),
+  worksWithParents: false,
 }
 
 export const ALL: ChildrenPickerConfig = {
   name: 'ALL',
   fun: (population: Population) => population,
+  worksWithParents: true,
 }
 
 export const RAND: ChildrenPickerConfig = {
   name: 'RAND',
   fun: (population: Population, size: number) => _.sampleSize(population, size),
+  worksWithParents: false,
 }
 
 export const FUDS: ChildrenPickerConfig = {
@@ -72,6 +77,7 @@ export const FUDS: ChildrenPickerConfig = {
 
     return groups.flat()
   },
+  worksWithParents: false,
 }
 
 export const MOD_FUDS: ChildrenPickerConfig = {
@@ -98,6 +104,7 @@ export const MOD_FUDS: ChildrenPickerConfig = {
 
     return groups.flat()
   },
+  worksWithParents: false,
 }
 
 const groupPopulation = (
