@@ -2,7 +2,7 @@ import {Spec, View, parse} from 'vega'
 import fs from 'fs'
 import path from 'path'
 import sp from 'synchronized-promise'
-import {functionData, TestFunctionSpec} from './testFunctions'
+import {functionData} from './testFunctions'
 import {AlgorithmConfig} from './runEvolution'
 import {Peak, Population} from './common'
 
@@ -10,7 +10,7 @@ type Config = AlgorithmConfig & {iteration: number; population: Population; peak
 
 export const writeSvg = sp(
   ({population, peaks = [], ...config}: Config): Promise<void> =>
-    new View(parse(makeSpec(config.testFunctionSpec, population, peaks)), {renderer: 'none'})
+    new View(parse(makeSpec(config, population, peaks)), {renderer: 'none'})
       .toSVG()
       .then(svg => {
         const path = makePath(config)
@@ -18,7 +18,7 @@ export const writeSvg = sp(
         fs.writeFileSync(path, svg)
       })
       .catch(console.error),
-      {tick: 2}
+  {tick: 2},
 )
 
 const makePath = (config: Omit<Config, 'population' | 'peaks'>): string =>
@@ -32,16 +32,16 @@ const makePath = (config: Omit<Config, 'population' | 'peaks'>): string =>
     `i_${config.iteration}.svg`,
   )
 
-const makeSpec = (
-  funcSpec: TestFunctionSpec,
-  population: Population,
-  peaks: Peak[] = [],
-): Spec => ({
+const makeSpec = (config: AlgorithmConfig, population: Population, peaks: Peak[] = []): Spec => ({
   $schema: 'https://vega.github.io/schema/vega/v5.json',
   width: 1500,
   height: 700,
+  padding: 5,
+  title: {
+    text: `${config.testFunctionSpec.name} - ${config.childrenSelectionConfig.name} - mut ${config.mutationProbability} - run ${config.runNum}`,
+  },
   data: [
-    {name: 'table', values: functionData[funcSpec.name]},
+    {name: 'table', values: functionData[config.testFunctionSpec.name]},
     {name: 'population', values: population},
     {name: 'peaks', values: peaks},
   ],
