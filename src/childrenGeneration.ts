@@ -50,6 +50,6 @@ const geneMutation = ({normalDistribution, mutationProbability, clamp}: Mutation
   Math.random() < mutationProbability ? clamp(makeGene(gene + normalDistribution())) : gene
 
 // L
-const CHILDREN_TO_GENERATE = 3
+export const CHILDREN_TO_GENERATE = 3
 
 export default generateChildren

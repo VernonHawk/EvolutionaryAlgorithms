@@ -97,7 +97,7 @@ const shouldTakeSnapshot = (iteration: number) => {
   }
 
   if (iteration <= 600) {
-    return iteration % 3 === 0
+    return iteration % 5 === 0
   }
 
   if (iteration <= 1000) {

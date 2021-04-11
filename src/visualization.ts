@@ -6,7 +6,7 @@ import {functionData} from './testFunctions'
 import {AlgorithmConfig} from './runEvolution'
 import {Peak, Population} from './common'
 
-type Config = AlgorithmConfig & {iteration: number; population: Population; peaks?: Peak[]}
+type Config = AlgorithmConfig & {iteration: number | string; population: Population; peaks?: Peak[]}
 
 export const writeSvg = sp(
   ({population, peaks = [], ...config}: Config): Promise<void> =>

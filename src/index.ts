@@ -7,6 +7,7 @@ import {withTime, withTimeF} from './common'
 import determineSeeds from './determineSeeds'
 import getStats, {Stats} from './stats'
 import * as visualization from './visualization'
+import {CHILDREN_TO_GENERATE} from './childrenGeneration'
 
 type Res = {
   fitnessFun: keyof typeof specs
@@ -15,7 +16,7 @@ type Res = {
   runs: Run[]
 }
 
-type Run = {iterations: number} & Stats
+type Run = {iterations: number; NFE: number} & Stats
 
 const TEST_RUNS = 3
 
@@ -71,7 +72,7 @@ const runTestFunction = (
   )
 
 const makeEvolutionRunner = (runConfig: Omit<AlgorithmConfig, 'runNum'>) => (
-  individual: Individual[],
+  startingIndividuals: Individual[],
   idx: number,
 ): Run => {
   const runNum = idx + 1
@@ -79,21 +80,33 @@ const makeEvolutionRunner = (runConfig: Omit<AlgorithmConfig, 'runNum'>) => (
 
   console.log('\n---------------')
   console.log('Test', runNum)
-  const evolutionRes = runEvolution(individual, config)
+  const evolutionRes = runEvolution(startingIndividuals, config)
 
   const seeds = determineSeeds(evolutionRes.finalPopulation)
   console.log('Seeds', seeds)
 
   const stats = getStats({seeds, testFunctionSpec: runConfig.testFunctionSpec})
 
+  const processedPeaks = visualization.processPeaks(stats)
   visualization.writeSvg({
     ...config,
     iteration: evolutionRes.iterations,
     population: evolutionRes.finalPopulation,
-    peaks: visualization.processPeaks(stats),
+    peaks: processedPeaks,
   })
 
-  return {iterations: evolutionRes.iterations, ...stats}
+  visualization.writeSvg({
+    ...config,
+    iteration: 'final',
+    population: [],
+    peaks: processedPeaks,
+  })
+
+  return {
+    iterations: evolutionRes.iterations,
+    NFE: evolutionRes.iterations * startingIndividuals.length * CHILDREN_TO_GENERATE,
+    ...stats,
+  }
 }
 
 const generateStartingIndividuals = ({
