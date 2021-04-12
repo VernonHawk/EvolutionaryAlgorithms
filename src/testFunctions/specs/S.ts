@@ -23,7 +23,6 @@ export const F20_Rastrigin: TestFunctionSpec = {
   dimensions: 'ALL',
 }
 
-// TODO
 // export const F20_m_Rastrigin: TestFunctionSpec = {
 //   name: 'F20_m_Rastrigin',
 //   fun: individual => individual,

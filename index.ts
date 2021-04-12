@@ -2,12 +2,14 @@ import run from './src'
 import {generateInitialSheets} from './src/sheets'
 import {isTestFuncName} from './src/testFunctions/helpers'
 
-const dimensions = [1, 2, 3, 4, 5, 10, 15, 20]
+const dimensionsList = [1, 2, 3, 4, 5, 10, 15, 20]
 
-generateInitialSheets(dimensions)
+generateInitialSheets(dimensionsList)
 
 const func = process.argv[2]
-const results = run(dimensions[0], isTestFuncName(func) ? [func] : undefined)
+const results = [1, 2, 3].map(dimensions =>
+  run(dimensions, isTestFuncName(func) ? [func] : undefined),
+)
 
 console.log(JSON.stringify(results, null, 2))
 

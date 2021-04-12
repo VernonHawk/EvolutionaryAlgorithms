@@ -46,4 +46,4 @@ export const reachedIterationLimit = ({
   runNum,
 }: ReachedIterationLimitAttrs): boolean =>
   iteration >=
-  (dimensions > 3 ? (runNum === 1 ? 400_000 : 100_000) : runNum === 1 ? 40_000 : 10_000)
+  (dimensions > 3 ? (runNum === 1 ? 400_000 : 100_000) : runNum === 1 ? 40_000 : 20_000)
