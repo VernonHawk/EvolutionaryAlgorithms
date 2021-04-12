@@ -21,6 +21,7 @@ export const F20_Rastrigin: TestFunctionSpec = {
     {x: -5, locality: 'local'},
   ],
   wide: false,
+  dimensions: 'ALL',
 }
 
 // TODO
@@ -30,6 +31,7 @@ export const F20_Rastrigin: TestFunctionSpec = {
 //   argRange: {min: 0, max: 1},
 //   peaks: [],
 //   wide: false,
+// dimensions: 'ALL'
 // }
 
 export const F20_m2_Rastrigin: TestFunctionSpec = {
@@ -43,6 +45,7 @@ export const F20_m2_Rastrigin: TestFunctionSpec = {
     {x: -0.49748, locality: 'global'},
   ],
   wide: false,
+  dimensions: 'ALL',
 }
 
 export const F22_Griewangk: TestFunctionSpec = {
@@ -67,6 +70,7 @@ export const F22_Griewangk: TestFunctionSpec = {
     }),
   ],
   wide: true,
+  dimensions: 'ALL',
 }
 
 // export const F23_Schwefel: TestFunctionSpec = {
@@ -197,13 +201,57 @@ export const F22_Griewangk: TestFunctionSpec = {
 // wide: false
 // }
 
-// export const D6_Five_Uneven_Peak_Trap: TestFunctionSpec = {
-//   name: 'D6_Five_Uneven_Peak_Trap',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
+export const D6_Five_Uneven_Peak_Trap: TestFunctionSpec = {
+  name: 'D6_Five_Uneven_Peak_Trap',
+  fun: individual => {
+    const x = individual[0]
+    if (x < 0 || x > 30) {
+      console.error(x, `is out of function ${D6_Five_Uneven_Peak_Trap.name} bounds`)
+      return 0
+    }
+
+    if (x < 2.5) {
+      return 80 * (2.5 - x)
+    }
+
+    if (x < 5) {
+      return 64 * (x - 2.5)
+    }
+
+    if (x < 7.5) {
+      return 64 * (7.5 - x)
+    }
+
+    if (x < 12.5) {
+      return 28 * (x - 7.5)
+    }
+
+    if (x < 17.5) {
+      return 28 * (17.5 - x)
+    }
+
+    if (x < 22.5) {
+      return 32 * (x - 17.5)
+    }
+
+    if (x < 27.5) {
+      return 32 * (27.5 - x)
+    }
+
+    // x <= 30
+    return 80 * (x - 27.5)
+  },
+  argRange: {min: 0, max: 30},
+  peaks: [
+    {x: 0, locality: 'global'},
+    {x: 30, locality: 'global'},
+    {x: 5, locality: 'local'},
+    {x: 12.5, locality: 'local'},
+    {x: 22.5, locality: 'local'},
+  ],
+  wide: false,
+  dimensions: 1,
+}
 
 // export const D7_2_dim_Trap: TestFunctionSpec = {
 //   name: 'D7_2_dim_Trap',

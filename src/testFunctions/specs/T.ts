@@ -13,7 +13,8 @@ export const F15_deba1: TestFunctionSpec = {
     {x: 0.7, locality: 'global'},
     {x: 0.9, locality: 'global'},
   ],
-  wide: false
+  wide: false,
+  dimensions: 'ALL',
 }
 
 export const F16_deba2: TestFunctionSpec = {
@@ -34,7 +35,8 @@ export const F16_deba2: TestFunctionSpec = {
     {x: 0.7, locality: 'local'},
     {x: 0.9, locality: 'local'},
   ],
-  wide: false
+  wide: false,
+  dimensions: 'ALL',
 }
 
 export const F18_deba3: TestFunctionSpec = {
@@ -52,7 +54,8 @@ export const F18_deba3: TestFunctionSpec = {
     {x: 0.681, locality: 'global'},
     {x: 0.934, locality: 'global'},
   ],
-  wide: false
+  wide: false,
+  dimensions: 'ALL',
 }
 
 export const F19_deba4: TestFunctionSpec = {
@@ -73,5 +76,6 @@ export const F19_deba4: TestFunctionSpec = {
     {x: 0.681, locality: 'local'},
     {x: 0.934, locality: 'local'},
   ],
-  wide: false
+  wide: false,
+  dimensions: 'ALL',
 }

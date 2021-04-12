@@ -22,7 +22,9 @@ export type RunResult = {Iterations: number; NFE: number; SucRun: boolean} & Sta
 const run = (dimensions: number, funcs = Object.keys(S) as TestFuncName[]): FullResult[] =>
   withTime('Full run', () =>
     _.flatMap(
-      funcs.map(f => specs[f]),
+      funcs
+        .map(f => specs[f])
+        .filter(spec => spec.dimensions === 'ALL' || spec.dimensions === dimensions),
       withTimeF('Test function', testFunctionSpec => {
         console.log('\n----------------------------')
 
