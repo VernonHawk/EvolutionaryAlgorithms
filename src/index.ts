@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import {Individual, makeIndividual, TEST_RUNS} from './common'
 import runEvolution, {AlgorithmConfig} from './runEvolution'
-import {specs, TestFuncName, TestFunctionSpec} from './testFunctions'
+import {specs, S, TestFuncName, TestFunctionSpec} from './testFunctions'
 import * as childrenSelectionFuncs from './childrenSelection'
 import {withTime, withTimeF} from './common'
 import determineSeeds from './determineSeeds'
@@ -11,7 +11,7 @@ import {CHILDREN_TO_GENERATE, MUTATION_PROBABILITIES} from './childrenGeneration
 import {writeRunResults} from './sheets'
 
 type FullResult = {
-  fitnessFun: keyof typeof specs
+  fitnessFun: TestFuncName
   childrenSelectionFun: keyof typeof childrenSelectionFuncs
   mutationProbability: number
   runs: RunResult[]
@@ -19,28 +19,28 @@ type FullResult = {
 
 export type RunResult = {Iterations: number; NFE: number; SucRun: boolean} & Stats['mainStats']
 
-const run = (
-  dimensions: number,
-  funcs: TestFuncName[] = Object.keys(specs) as TestFuncName[],
-): FullResult[] => {
-  const populationSize = getPopulationSize(dimensions)
-
-  console.log('Population size', populationSize, 'dimensions', dimensions)
-
-  const startingIndividuals = _.times(TEST_RUNS, () =>
-    generateStartingIndividuals({size: populationSize, dimensions}),
-  )
-
-  return withTime('Full run', () =>
+const run = (dimensions: number, funcs = Object.keys(S) as TestFuncName[]): FullResult[] =>
+  withTime('Full run', () =>
     _.flatMap(
       funcs.map(f => specs[f]),
       withTimeF('Test function', testFunctionSpec => {
         console.log('\n----------------------------')
+
+        const populationSize = getPopulationSize(dimensions, testFunctionSpec.wide)
+        console.log('Population size', populationSize, 'dimensions', dimensions)
+
+        const startingIndividuals = _.times(TEST_RUNS, () =>
+          generateStartingIndividuals({
+            size: populationSize,
+            dimensions,
+            argRange: testFunctionSpec.argRange,
+          }),
+        )
+
         return runTestFunction(startingIndividuals, testFunctionSpec)
       }),
     ),
   )
-}
 
 const runTestFunction = (
   startingIndividuals: Individual[][],
@@ -129,12 +129,15 @@ const makeEvolutionRunner = (runConfig: RunConfig) => (
 const generateStartingIndividuals = ({
   size,
   dimensions,
+  argRange: {min, max},
 }: {
   size: number
   dimensions: number
+  argRange: {min: number; max: number}
 }): Individual[] =>
-  _.times(size, () => makeIndividual(_.times(dimensions, () => _.random(0, 1, true))))
+  _.times(size, () => makeIndividual(_.times(dimensions, () => _.random(min, max, true))))
 
-const getPopulationSize = (dimensions: number): number => (dimensions <= 3 ? 500 : 5000)
+const getPopulationSize = (dimensions: number, wide: boolean): number =>
+  dimensions <= 3 ? (wide ? 1000 : 500) : wide ? 10_000 : 5_000
 
 export default run

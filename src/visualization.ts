@@ -76,7 +76,7 @@ const makeSpec = (config: AlgorithmConfig, population: Population, peaks: Peak[]
           x: {scale: 'x', field: 'individual'},
           y: {scale: 'y', field: 'health'},
           strokeWidth: {value: 1},
-          interpolate: {value: 'natural'},
+          interpolate: {value: 'linear'},
         },
       },
     },

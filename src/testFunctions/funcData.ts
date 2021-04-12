@@ -7,7 +7,7 @@ const generateFunctionData = (
   {fun, argRange}: TestFunctionSpec,
   num = 300,
 ): {individual: number; health: number}[] => {
-  const step = (argRange.max - argRange.min) / num
+  const step = (argRange.max - argRange.min) / (num - 1)
 
   return _.times(num).map(idx => {
     const x = idx * step + argRange.min

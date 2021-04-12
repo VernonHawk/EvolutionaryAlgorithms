@@ -7,6 +7,7 @@ export type TestFunctionSpec = {
   fun: TestFunction
   argRange: {min: number; max: number}
   peaks: FuncPeak[]
+  wide: boolean
 }
 
 export type TestFuncName = keyof typeof specs

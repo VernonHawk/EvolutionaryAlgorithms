@@ -3,7 +3,7 @@ import {TestFunctionSpec} from '../common'
 export const F15_deba1: TestFunctionSpec = {
   name: 'F15_deba1',
   fun: individual =>
-    individual.reduce((acc, curr) => acc + Math.pow(Math.sin(5 * Math.PI * curr), 6), 0) /
+    individual.reduce((acc, x) => acc + Math.pow(Math.sin(5 * Math.PI * x), 6), 0) /
     individual.length,
   argRange: {min: 0, max: 1},
   peaks: [
@@ -13,16 +13,17 @@ export const F15_deba1: TestFunctionSpec = {
     {x: 0.7, locality: 'global'},
     {x: 0.9, locality: 'global'},
   ],
+  wide: false
 }
 
 export const F16_deba2: TestFunctionSpec = {
   name: 'F16_deba2',
   fun: individual =>
     individual.reduce(
-      (acc, curr) =>
+      (acc, x) =>
         acc +
-        Math.pow(Math.E, -2 * Math.log(2) * Math.pow((curr - 0.1) / 0.8, 2)) *
-          Math.pow(Math.sin(5 * Math.PI * curr), 6),
+        Math.pow(Math.E, -2 * Math.log(2) * Math.pow((x - 0.1) / 0.8, 2)) *
+          Math.pow(Math.sin(5 * Math.PI * x), 6),
       0,
     ) / individual.length,
   argRange: {min: 0, max: 1},
@@ -33,13 +34,14 @@ export const F16_deba2: TestFunctionSpec = {
     {x: 0.7, locality: 'local'},
     {x: 0.9, locality: 'local'},
   ],
+  wide: false
 }
 
 export const F18_deba3: TestFunctionSpec = {
   name: 'F18_deba3',
   fun: individual =>
     individual.reduce(
-      (acc, curr) => acc + Math.pow(Math.sin(5 * Math.PI * (Math.pow(curr, 0.75) - 0.05)), 6),
+      (acc, x) => acc + Math.pow(Math.sin(5 * Math.PI * (Math.pow(x, 0.75) - 0.05)), 6),
       0,
     ) / individual.length,
   argRange: {min: 0, max: 1},
@@ -50,16 +52,17 @@ export const F18_deba3: TestFunctionSpec = {
     {x: 0.681, locality: 'global'},
     {x: 0.934, locality: 'global'},
   ],
+  wide: false
 }
 
 export const F19_deba4: TestFunctionSpec = {
   name: 'F19_deba4',
   fun: individual =>
     individual.reduce(
-      (acc, curr) =>
+      (acc, x) =>
         acc +
-        Math.pow(Math.E, -2 * Math.log(2) * Math.pow((curr - 0.08) / 0.854, 2)) *
-          Math.pow(Math.sin(5 * Math.PI * (Math.pow(curr, 0.75) - 0.05)), 6),
+        Math.pow(Math.E, -2 * Math.log(2) * Math.pow((x - 0.08) / 0.854, 2)) *
+          Math.pow(Math.sin(5 * Math.PI * (Math.pow(x, 0.75) - 0.05)), 6),
       0,
     ) / individual.length,
   argRange: {min: 0, max: 1},
@@ -70,4 +73,5 @@ export const F19_deba4: TestFunctionSpec = {
     {x: 0.681, locality: 'local'},
     {x: 0.934, locality: 'local'},
   ],
+  wide: false
 }
