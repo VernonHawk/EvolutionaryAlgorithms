@@ -1,4 +1,5 @@
 import {TestFunctionSpec} from '../common'
+import {generatePeaks} from '../helpers'
 
 export const F20_Rastrigin: TestFunctionSpec = {
   name: 'F20_Rastrigin',
@@ -44,13 +45,29 @@ export const F20_m2_Rastrigin: TestFunctionSpec = {
   wide: false,
 }
 
-// export const F22_Griewangk: TestFunctionSpec = {
-//   name: 'F22_Griewangk',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: true
-// }
+export const F22_Griewangk: TestFunctionSpec = {
+  name: 'F22_Griewangk',
+  fun: individual =>
+    individual.length -
+    1 -
+    individual.reduce((acc, x) => acc + Math.pow(x, 2), 0) / 4_000 +
+    individual.reduce((acc, x, i) => acc * Math.cos(x / Math.sqrt(i + 1)), 1),
+  argRange: {min: -600, max: 600},
+  peaks: [
+    {x: 0, locality: 'global'},
+    ...generatePeaks({
+      getValue: it => (it + 1) * 6.2800452793799046869,
+      stopCondition: val => val > 600,
+      locality: 'local',
+    }),
+    ...generatePeaks({
+      getValue: it => -(it + 1) * 6.2800452793799046869,
+      stopCondition: val => val < -600,
+      locality: 'local',
+    }),
+  ],
+  wide: true,
+}
 
 // export const F23_Schwefel: TestFunctionSpec = {
 //   name: 'F23_Schwefel',

@@ -1,6 +1,6 @@
 import run from './src'
 import {generateInitialSheets} from './src/sheets'
-import {isTestFuncName} from './src/testFunctions'
+import {isTestFuncName} from './src/testFunctions/helpers'
 
 const dimensions = [1, 2, 3, 4, 5, 10, 15, 20]
 

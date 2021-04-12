@@ -12,7 +12,6 @@ export type TestFunctionSpec = {
 
 export type TestFuncName = keyof typeof specs
 
-export const isTestFuncName = (str: string): str is TestFuncName =>
-  Object.keys(specs).includes(str as TestFuncName)
+export type Locality = 'global' | 'local'
 
-export type FuncPeak = {x: number; locality: 'global' | 'local'}
+export type FuncPeak = {x: number; locality: Locality}
