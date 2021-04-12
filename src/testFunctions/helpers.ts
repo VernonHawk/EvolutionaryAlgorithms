@@ -1,3 +1,4 @@
+import {Individual} from '../common'
 import {Locality, TestFuncName} from './common'
 import specs from './specs'
 
@@ -21,3 +22,6 @@ export const generatePeaks = ({
 
   return res
 }
+
+export const sum = (individual: Individual, comp: (x: number) => number): number =>
+  individual.reduce((acc, x) => acc + comp(x), 0)

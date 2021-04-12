@@ -1,10 +1,10 @@
 import {TestFunctionSpec} from '../common'
+import {sum} from '../helpers'
 
 export const F15_deba1: TestFunctionSpec = {
   name: 'F15_deba1',
   fun: individual =>
-    individual.reduce((acc, x) => acc + Math.pow(Math.sin(5 * Math.PI * x), 6), 0) /
-    individual.length,
+    sum(individual, x => Math.pow(Math.sin(5 * Math.PI * x), 6)) / individual.length,
   argRange: {min: 0, max: 1},
   peaks: [
     {x: 0.1, locality: 'global'},
@@ -20,12 +20,11 @@ export const F15_deba1: TestFunctionSpec = {
 export const F16_deba2: TestFunctionSpec = {
   name: 'F16_deba2',
   fun: individual =>
-    individual.reduce(
-      (acc, x) =>
-        acc +
+    sum(
+      individual,
+      x =>
         Math.pow(Math.E, -2 * Math.log(2) * Math.pow((x - 0.1) / 0.8, 2)) *
-          Math.pow(Math.sin(5 * Math.PI * x), 6),
-      0,
+        Math.pow(Math.sin(5 * Math.PI * x), 6),
     ) / individual.length,
   argRange: {min: 0, max: 1},
   peaks: [
@@ -42,10 +41,8 @@ export const F16_deba2: TestFunctionSpec = {
 export const F18_deba3: TestFunctionSpec = {
   name: 'F18_deba3',
   fun: individual =>
-    individual.reduce(
-      (acc, x) => acc + Math.pow(Math.sin(5 * Math.PI * (Math.pow(x, 0.75) - 0.05)), 6),
-      0,
-    ) / individual.length,
+    sum(individual, x => Math.pow(Math.sin(5 * Math.PI * (Math.pow(x, 0.75) - 0.05)), 6)) /
+    individual.length,
   argRange: {min: 0, max: 1},
   peaks: [
     {x: 0.08, locality: 'global'},
@@ -61,12 +58,11 @@ export const F18_deba3: TestFunctionSpec = {
 export const F19_deba4: TestFunctionSpec = {
   name: 'F19_deba4',
   fun: individual =>
-    individual.reduce(
-      (acc, x) =>
-        acc +
+    sum(
+      individual,
+      x =>
         Math.pow(Math.E, -2 * Math.log(2) * Math.pow((x - 0.08) / 0.854, 2)) *
-          Math.pow(Math.sin(5 * Math.PI * (Math.pow(x, 0.75) - 0.05)), 6),
-      0,
+        Math.pow(Math.sin(5 * Math.PI * (Math.pow(x, 0.75) - 0.05)), 6),
     ) / individual.length,
   argRange: {min: 0, max: 1},
   peaks: [

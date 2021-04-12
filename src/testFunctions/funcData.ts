@@ -5,7 +5,7 @@ import specs from './specs'
 
 const generateFunctionData = (
   {fun, argRange}: TestFunctionSpec,
-  num = 300,
+  num = 600,
 ): {individual: number; health: number}[] => {
   const step = (argRange.max - argRange.min) / (num - 1)
 

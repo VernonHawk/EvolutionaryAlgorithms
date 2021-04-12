@@ -1,11 +1,10 @@
 import {TestFunctionSpec} from '../common'
-import {generatePeaks} from '../helpers'
+import {generatePeaks, sum} from '../helpers'
 
 export const F20_Rastrigin: TestFunctionSpec = {
   name: 'F20_Rastrigin',
   fun: individual =>
-    individual.reduce((acc, x) => acc + 10 * Math.cos(2 * Math.PI * x) - Math.pow(x, 2), 0) -
-    10 * individual.length,
+    sum(individual, x => 10 * Math.cos(2 * Math.PI * x) - Math.pow(x, 2)) - 10 * individual.length,
   argRange: {min: -5.12, max: 5.12},
   peaks: [
     {x: 0, locality: 'global'},
@@ -37,8 +36,7 @@ export const F20_Rastrigin: TestFunctionSpec = {
 export const F20_m2_Rastrigin: TestFunctionSpec = {
   name: 'F20_m2_Rastrigin',
   fun: individual =>
-    10 * individual.length -
-    individual.reduce((acc, x) => acc + Math.pow(x, 2) + 10 * Math.cos(2 * Math.PI * x), 0),
+    10 * individual.length - sum(individual, x => Math.pow(x, 2) + 10 * Math.cos(2 * Math.PI * x)),
   argRange: {min: -5.12, max: 5.12},
   peaks: [
     {x: 0.49748, locality: 'global'},
@@ -53,7 +51,7 @@ export const F22_Griewangk: TestFunctionSpec = {
   fun: individual =>
     individual.length -
     1 -
-    individual.reduce((acc, x) => acc + Math.pow(x, 2), 0) / 4_000 +
+    sum(individual, x => Math.pow(x, 2)) / 4_000 +
     individual.reduce((acc, x, i) => acc * Math.cos(x / Math.sqrt(i + 1)), 1),
   argRange: {min: -600, max: 600},
   peaks: [
@@ -105,13 +103,17 @@ export const F22_Griewangk: TestFunctionSpec = {
 // wide: false
 // }
 
-// export const F31_Xin_She_Yang: TestFunctionSpec = {
-//   name: 'F31_Xin_She_Yang',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
+export const F31_Xin_She_Yang_2: TestFunctionSpec = {
+  name: 'F31_Xin_She_Yang_2',
+  fun: individual => sum(individual, Math.abs) * Math.exp(-sum(individual, x => Math.pow(x, 2))),
+  argRange: {min: -10, max: 10},
+  peaks: [
+    {x: Math.SQRT1_2, locality: 'global'},
+    {x: -Math.SQRT1_2, locality: 'global'},
+  ],
+  wide: false,
+  dimensions: 'ALL',
+}
 
 // export const F38_Goldstein_Price: TestFunctionSpec = {
 //   name: 'F38_Goldstein_Price',
