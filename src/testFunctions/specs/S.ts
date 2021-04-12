@@ -22,21 +22,27 @@ export const F20_Rastrigin: TestFunctionSpec = {
   wide: false,
 }
 
+// TODO
 // export const F20_m_Rastrigin: TestFunctionSpec = {
 //   name: 'F20_m_Rastrigin',
 //   fun: individual => individual,
 //   argRange: {min: 0, max: 1},
 //   peaks: [],
-// wide: false
+//   wide: false,
 // }
 
-// export const F20_m2_Rastrigin: TestFunctionSpec = {
-//   name: 'F20_m2_Rastrigin',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
+export const F20_m2_Rastrigin: TestFunctionSpec = {
+  name: 'F20_m2_Rastrigin',
+  fun: individual =>
+    10 * individual.length -
+    individual.reduce((acc, x) => acc + Math.pow(x, 2) + 10 * Math.cos(2 * Math.PI * x), 0),
+  argRange: {min: -5.12, max: 5.12},
+  peaks: [
+    {x: 0.49748, locality: 'global'},
+    {x: -0.49748, locality: 'global'},
+  ],
+  wide: false,
+}
 
 // export const F22_Griewangk: TestFunctionSpec = {
 //   name: 'F22_Griewangk',
