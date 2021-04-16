@@ -5,6 +5,7 @@ import sp from 'synchronized-promise'
 import {MUTATION_PROBABILITIES} from '../childrenGeneration'
 import {TestFunctionSpec} from '../testFunctions'
 import * as childrenSelection from '../childrenSelection'
+import {RESULTS_FOLDER} from '../common'
 
 export const writeSheet = (workbook: Workbook, path: string, tick = 1): void =>
   sp(() => workbook.xlsx.writeFile(path), {tick})()
@@ -15,7 +16,7 @@ export const readSheet = (path: string, tick = 1): Workbook =>
 export const getPath = (functionSpec: TestFunctionSpec, dimensions: number): string =>
   path.resolve(
     __dirname,
-    `../../results/${functionSpec.name}/Fun_${functionSpec.name}__Dim_${dimensions}.xlsx`,
+    `../../${RESULTS_FOLDER}/${functionSpec.name}/Fun_${functionSpec.name}__Dim_${dimensions}.xlsx`,
   )
 
 export const emptyCols = (num: number): Partial<Column>[] =>

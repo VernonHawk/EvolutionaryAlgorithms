@@ -4,7 +4,7 @@ import path from 'path'
 import sp from 'synchronized-promise'
 import {functionData} from './testFunctions'
 import {AlgorithmConfig} from './runEvolution'
-import {makeFilePath, Peak, Population} from './common'
+import {makeFilePath, Peak, Population, RESULTS_FOLDER} from './common'
 
 type Config = AlgorithmConfig & {iteration: number | string; population: Population; peaks?: Peak[]}
 
@@ -25,7 +25,7 @@ export const writeSvg = sp(
 const makePath = (config: Omit<Config, 'population' | 'peaks'>): string =>
   path.resolve(
     __dirname,
-    '../results',
+    `../${RESULTS_FOLDER}`,
     config.testFunctionSpec.name,
     `c_${config.childrenSelectionConfig.name}`,
     `m_${config.mutationProbability.toString()}`,
