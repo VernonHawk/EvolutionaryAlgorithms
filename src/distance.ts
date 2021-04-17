@@ -13,7 +13,7 @@ export const avgDistance = (population: Population): number => {
 
   const distancesAmount = (N * (N - 1)) / 2
 
-  return distances / distancesAmount
+  return distancesAmount === 0 ? 0 : distances / distancesAmount
 }
 
 export const distance = (a: Individual, b: Individual): number =>

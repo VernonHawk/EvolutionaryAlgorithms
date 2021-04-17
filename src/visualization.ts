@@ -6,11 +6,18 @@ import {functionData} from './testFunctions'
 import {AlgorithmConfig} from './runEvolution'
 import {makeFilePath, Peak, Population, RESULTS_FOLDER} from './common'
 
-type Config = AlgorithmConfig & {iteration: number | string; population: Population; peaks?: Peak[]}
+type Config = AlgorithmConfig & {
+  iteration: number | string
+  population: Population
+  peaks?: Peak[]
+  parents?: Population
+  children?: Population
+  selectedChildren?: Population
+}
 
 export const writeSvg = sp(
-  ({population, peaks = [], ...config}: Config): Promise<void> =>
-    new View(parse(makeSpec(config, population, peaks)), {renderer: 'none'})
+  (config: Config): Promise<void> =>
+    new View(parse(makeSpec(config)), {renderer: 'none'})
       .toSVG()
       .then(svg => {
         const path = makePath(config)
@@ -33,17 +40,30 @@ const makePath = (config: Omit<Config, 'population' | 'peaks'>): string =>
     `i_${config.iteration}.svg`,
   )
 
-const makeSpec = (config: AlgorithmConfig, population: Population, peaks: Peak[] = []): Spec => ({
+const makeSpec = ({
+  testFunctionSpec,
+  childrenSelectionConfig,
+  mutationProbability,
+  runNum,
+  population,
+  parents,
+  children,
+  selectedChildren,
+  peaks,
+}: Config): Spec => ({
   $schema: 'https://vega.github.io/schema/vega/v5.json',
   width: 1500,
   height: 700,
   padding: 5,
   title: {
-    text: `${config.testFunctionSpec.name} - ${config.childrenSelectionConfig.name} - mut ${config.mutationProbability} - run ${config.runNum}`,
+    text: `${testFunctionSpec.name} - ${childrenSelectionConfig.name} - mut ${mutationProbability} - run ${runNum}`,
   },
   data: [
-    {name: 'table', values: functionData[config.testFunctionSpec.name]},
+    {name: 'table', values: functionData[testFunctionSpec.name]},
     {name: 'population', values: population},
+    {name: 'parents', values: parents},
+    {name: 'children', values: children},
+    {name: 'selectedChildren', values: selectedChildren},
     {name: 'peaks', values: peaks},
   ],
   scales: [
@@ -89,6 +109,39 @@ const makeSpec = (config: AlgorithmConfig, population: Population, peaks: Peak[]
           y: {scale: 'y', field: 'health'},
           size: {value: 30},
           fill: {value: 'blue'},
+        },
+      },
+    },
+    {
+      type: 'symbol',
+      from: {data: 'parents'},
+      encode: {
+        enter: {
+          x: {scale: 'x', field: 'individual'},
+          y: {scale: 'y', field: 'health'},
+          fill: {value: 'red'},
+        },
+      },
+    },
+    {
+      type: 'symbol',
+      from: {data: 'children'},
+      encode: {
+        enter: {
+          x: {scale: 'x', field: 'individual'},
+          y: {scale: 'y', field: 'health'},
+          fill: {value: 'yellow'},
+        },
+      },
+    },
+    {
+      type: 'symbol',
+      from: {data: 'selectedChildren'},
+      encode: {
+        enter: {
+          x: {scale: 'x', field: 'individual'},
+          y: {scale: 'y', field: 'health'},
+          fill: {value: 'green'},
         },
       },
     },

@@ -120,14 +120,18 @@ export const F24_Generalized_Shubert_dim_2: TestFunctionSpec = {
   dimensions: 2,
 }
 
-// TODO:
-// export const F25_Ackley: TestFunctionSpec = {
-//   name: 'F25_Ackley',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: true
-// }
+export const F25_Ackley: TestFunctionSpec = {
+  name: 'F25_Ackley',
+  fun: individual =>
+    20 * Math.exp(-0.2 * Math.sqrt(sum(individual, x => Math.pow(x, 2)) / individual.length)) +
+    Math.exp(sum(individual, x => Math.cos(2 * Math.PI * x)) / individual.length) -
+    20 -
+    Math.E,
+  argRange: {min: -32.768, max: 32.768},
+  peaks: [{x: 0, locality: 'global'}],
+  wide: true,
+  dimensions: 'ALL',
+}
 
 // TODO:
 // export const F28_Vincent: TestFunctionSpec = {
