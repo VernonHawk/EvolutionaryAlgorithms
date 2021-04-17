@@ -133,14 +133,21 @@ export const F25_Ackley: TestFunctionSpec = {
   dimensions: 'ALL',
 }
 
-// TODO:
-// export const F28_Vincent: TestFunctionSpec = {
-//   name: 'F28_Vincent',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
+export const F28_Vincent: TestFunctionSpec = {
+  name: 'F28_Vincent',
+  fun: individual => sum(individual, x => Math.sin(10 * Math.log(x))) / individual.length,
+  argRange: {min: 0.25, max: 10},
+  peaks: [
+    {x: 0.333018, locality: 'global'},
+    {x: 0.624228, locality: 'global'},
+    {x: 1.170088, locality: 'global'},
+    {x: 2.19328, locality: 'global'},
+    {x: 4.111207, locality: 'global'},
+    {x: 7.706277, locality: 'global'},
+  ],
+  wide: false,
+  dimensions: 'ALL',
+}
 
 const F31_Xin_She_Yang_2_Base: Omit<TestFunctionSpec, 'name' | 'peaks' | 'dimensions'> = {
   fun: individual => sum(individual, Math.abs) * Math.exp(-sum(individual, x => Math.pow(x, 2))),
