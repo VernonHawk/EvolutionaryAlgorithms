@@ -22,23 +22,20 @@ const generateChildren = ({
     _.times(CHILDREN_TO_GENERATE, () =>
       individualToPopulationEntry(testFunctionSpec.fun)(
         makeIndividual(
-          parent.individual.map((gene, idx) =>
-            geneMutation(
+          parent.individual.map((gene, idx) => {
+            const argsRange =
+              testFunctionSpec.argsRange.length === 1
+                ? testFunctionSpec.argsRange[0]
+                : testFunctionSpec.argsRange[idx]
+            return geneMutation(
               {
                 normalDistribution,
-                clamp: gene =>
-                  makeGene(
-                    _.clamp(
-                      gene,
-                      testFunctionSpec.argsRange[idx].min,
-                      testFunctionSpec.argsRange[idx].max,
-                    ),
-                  ),
+                clamp: gene => makeGene(_.clamp(gene, argsRange.min, argsRange.max)),
                 mutationProbability,
               },
               gene,
-            ),
-          ),
+            )
+          }),
         ),
       ),
     ),

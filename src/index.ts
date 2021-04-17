@@ -139,7 +139,12 @@ const generateStartingIndividuals = ({
   argsRange: ArgsRange
 }): Individual[] =>
   _.times(size, () =>
-    makeIndividual(_.times(dimensions, it => _.random(argsRange[it].min, argsRange[it].max, true))),
+    makeIndividual(
+      _.times(dimensions, idx => {
+        const argRange = argsRange.length === 1 ? argsRange[0] : argsRange[idx]
+        return _.random(argRange.min, argRange.max, true)
+      }),
+    ),
   )
 
 const getPopulationSize = (dimensions: number, wide: boolean): number =>
