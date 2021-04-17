@@ -1,4 +1,4 @@
-import {Individual} from '../common'
+import {Individual, Peak} from '../common'
 import specs from './specs'
 
 export type TestFunction = (individual: Individual) => number
@@ -7,6 +7,7 @@ export type TestFunctionSpec = {
   fun: TestFunction
   argRange: {min: number; max: number}
   peaks: FuncPeak[]
+  absolutePeaks?: (Peak & {global: boolean})[]
   wide: boolean
   dimensions: 'ALL' | number
 }

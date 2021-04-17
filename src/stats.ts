@@ -28,7 +28,9 @@ const getStats = ({
   const dimensions = seeds[0].individual.length
 
   const NSeeds = seeds.length
-  const peaks = generatePeaks(testFunctionSpec, dimensions)
+  const peaks = !!testFunctionSpec.absolutePeaks?.length
+    ? testFunctionSpec.absolutePeaks
+    : generatePeaks(testFunctionSpec, dimensions)
 
   const {globalPeaks, localPeaks, falsePeaks} = verifySeeds(peaks, seeds)
   const GP = globalPeaks.length

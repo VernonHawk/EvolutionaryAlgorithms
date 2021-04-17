@@ -1,3 +1,5 @@
+import _ from 'lodash'
+import {individualToPopulationEntry, makeIndividual, makePeak} from '../../../common'
 import {TestFunctionSpec} from '../../common'
 import {generatePeaks, product, sum} from '../../helpers'
 
@@ -70,14 +72,53 @@ export const F23_Schwefel: TestFunctionSpec = {
   dimensions: 'ALL',
 }
 
-// TODO:
-// export const F24_Generalized_Shubert: TestFunctionSpec = {
-//   name: 'F24_Generalized_Shubert',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
+const F24_Generalized_Shubert_Base: Omit<TestFunctionSpec, 'name' | 'peaks' | 'dimensions'> = {
+  fun: individual =>
+    -product(individual, x => sum(_.range(1, 6), j => j * Math.cos((j + 1) * x + j))),
+  argRange: {min: -10, max: 10},
+  wide: false,
+}
+
+export const F24_Generalized_Shubert_dim_1: TestFunctionSpec = {
+  ...F24_Generalized_Shubert_Base,
+  name: 'F24_Generalized_Shubert_dim_1',
+  peaks: [
+    {x: 4.858, locality: 'global'},
+    {x: -1.4251, locality: 'global'},
+    {x: -7.7083, locality: 'global'},
+  ],
+  dimensions: 1,
+}
+
+export const F24_Generalized_Shubert_dim_2: TestFunctionSpec = {
+  ...F24_Generalized_Shubert_Base,
+  name: 'F24_Generalized_Shubert_dim_2',
+  absolutePeaks: [
+    [-7.0835, 4.858],
+    [-7.0835, -7.7083],
+    [-1.4251, -7.0835],
+    [5.4828, 4.858],
+    [-1.4251, -0.8003],
+    [4.858, 5.4828],
+    [-7.7083, -7.0835],
+    [-7.0835, -1.4251],
+    [-7.7083, -0.8003],
+    [-7.7083, 5.4828],
+    [-0.8003, -7.7083],
+    [-0.8003, -1.4251],
+    [-0.8003, 4.858],
+    [-1.4251, 5.4828],
+    [5.4828, -7.7083],
+    [4.858, -7.0835],
+    [5.4828, -1.4251],
+    [4.858, -0.8003],
+  ].map(n => ({
+    global: true,
+    ...makePeak(individualToPopulationEntry(F24_Generalized_Shubert_Base.fun)(makeIndividual(n))),
+  })),
+  peaks: [],
+  dimensions: 2,
+}
 
 // TODO:
 // export const F25_Ackley: TestFunctionSpec = {
@@ -97,14 +138,14 @@ export const F23_Schwefel: TestFunctionSpec = {
 // wide: false
 // }
 
-const Xin_She_Yang_2_Base: Omit<TestFunctionSpec, 'name' | 'peaks' | 'dimensions'> = {
+const F31_Xin_She_Yang_2_Base: Omit<TestFunctionSpec, 'name' | 'peaks' | 'dimensions'> = {
   fun: individual => sum(individual, Math.abs) * Math.exp(-sum(individual, x => Math.pow(x, 2))),
   argRange: {min: -10, max: 10},
   wide: false,
 }
 
 export const F31_Xin_She_Yang_2_dim_1: TestFunctionSpec = {
-  ...Xin_She_Yang_2_Base,
+  ...F31_Xin_She_Yang_2_Base,
   name: 'F31_Xin_She_Yang_2_dim_1',
   peaks: [
     {x: Math.SQRT1_2, locality: 'global'},
@@ -114,7 +155,7 @@ export const F31_Xin_She_Yang_2_dim_1: TestFunctionSpec = {
 }
 
 export const F31_Xin_She_Yang_2_dim_2: TestFunctionSpec = {
-  ...Xin_She_Yang_2_Base,
+  ...F31_Xin_She_Yang_2_Base,
   name: 'F31_Xin_She_Yang_2_dim_2',
   peaks: [
     {x: 0.5, locality: 'global'},
