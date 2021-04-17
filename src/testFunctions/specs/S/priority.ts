@@ -202,20 +202,31 @@ export const F42_5_hills_4_valleys: TestFunctionSpec = {
   dimensions: 2,
 }
 
-// TODO:
-// export const F45_Himmelblau: TestFunctionSpec = {
-//   name: 'F45_Himmelblau',
-//   fun: individual => individual,
-//   argRange: [{min: 0, max: 1}],
-//   peaks: [],
-// wide: false
-// }
+const F45_Himmelblau_fun: TestFunctionSpec['fun'] = ([x1, x2]) =>
+  200 - Math.pow(Math.pow(x1, 2) + x2 - 11, 2) - Math.pow(x1 + Math.pow(x2, 2) - 7, 2)
+export const F45_Himmelblau: TestFunctionSpec = {
+  name: 'F45_Himmelblau',
+  fun: F45_Himmelblau_fun,
+  argsRange: [{min: -6, max: 6}],
+  peaks: [],
+  absolutePeaks: [
+    [3, 2],
+    [3.58442834, -1.84812653],
+    [-3.77931025, -3.28318599],
+    [-2.80511809, 3.13131252],
+  ].map(p => ({
+    global: true,
+    ...makePeak(individualToPopulationEntry(F45_Himmelblau_fun)(makeIndividual(p))),
+  })),
+  wide: false,
+  dimensions: 2,
+}
 
 // TODO:
 // export const F46_six_hump_camel_back: TestFunctionSpec = {
 //   name: 'F46_six_hump_camel_back',
 //   fun: individual => individual,
-//   argRange: [{min: 0, max: 1}],
+//   argsRange: [{min: 0, max: 1}],
 //   peaks: [],
 // wide: false
 // }
@@ -224,7 +235,7 @@ export const F42_5_hills_4_valleys: TestFunctionSpec = {
 // export const F50_Easom: TestFunctionSpec = {
 //   name: 'F50_Easom',
 //   fun: individual => individual,
-//   argRange: [{min: 0, max: 1}],
+//   argsRange: [{min: 0, max: 1}],
 //   peaks: [],
 // wide: true
 // }
@@ -284,7 +295,7 @@ export const D6_Five_Uneven_Peak_Trap: TestFunctionSpec = {
 // export const D7_2_dim_Trap: TestFunctionSpec = {
 //   name: 'D7_2_dim_Trap',
 //   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
+//   argsRange: {min: 0, max: 1},
 //   peaks: [],
 // wide: false
 // }
