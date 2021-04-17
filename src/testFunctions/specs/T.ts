@@ -5,7 +5,7 @@ export const F15_deba1: TestFunctionSpec = {
   name: 'F15_deba1',
   fun: individual =>
     sum(individual, x => Math.pow(Math.sin(5 * Math.PI * x), 6)) / individual.length,
-  argRange: {min: 0, max: 1},
+  argsRange: [{min: 0, max: 1}],
   peaks: [
     {x: 0.1, locality: 'global'},
     {x: 0.3, locality: 'global'},
@@ -26,7 +26,7 @@ export const F16_deba2: TestFunctionSpec = {
         Math.pow(Math.E, -2 * Math.log(2) * Math.pow((x - 0.1) / 0.8, 2)) *
         Math.pow(Math.sin(5 * Math.PI * x), 6),
     ) / individual.length,
-  argRange: {min: 0, max: 1},
+  argsRange: [{min: 0, max: 1}],
   peaks: [
     {x: 0.1, locality: 'global'},
     {x: 0.3, locality: 'local'},
@@ -43,7 +43,7 @@ export const F18_deba3: TestFunctionSpec = {
   fun: individual =>
     sum(individual, x => Math.pow(Math.sin(5 * Math.PI * (Math.pow(x, 0.75) - 0.05)), 6)) /
     individual.length,
-  argRange: {min: 0, max: 1},
+  argsRange: [{min: 0, max: 1}],
   peaks: [
     {x: 0.08, locality: 'global'},
     {x: 0.247, locality: 'global'},
@@ -64,7 +64,7 @@ export const F19_deba4: TestFunctionSpec = {
         Math.pow(Math.E, -2 * Math.log(2) * Math.pow((x - 0.08) / 0.854, 2)) *
         Math.pow(Math.sin(5 * Math.PI * (Math.pow(x, 0.75) - 0.05)), 6),
     ) / individual.length,
-  argRange: {min: 0, max: 1},
+  argsRange: [{min: 0, max: 1}],
   peaks: [
     {x: 0.08, locality: 'global'},
     {x: 0.247, locality: 'local'},

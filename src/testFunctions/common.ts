@@ -1,11 +1,13 @@
 import {Individual, Peak} from '../common'
 import specs from './specs'
 
+export type ArgsRange = {min: number; max: number}[]
+
 export type TestFunction = (individual: Individual) => number
 export type TestFunctionSpec = {
   name: TestFuncName
   fun: TestFunction
-  argRange: {min: number; max: number}
+  argsRange: ArgsRange
   peaks: FuncPeak[]
   absolutePeaks?: (Peak & {global: boolean})[]
   wide: boolean

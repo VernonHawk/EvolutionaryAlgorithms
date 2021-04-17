@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import {Individual, makeIndividual, TEST_RUNS} from './common'
 import runEvolution, {AlgorithmConfig} from './runEvolution'
-import {specs, S, TestFuncName, TestFunctionSpec} from './testFunctions'
+import {specs, S, T, TestFuncName, TestFunctionSpec, ArgsRange} from './testFunctions'
 import * as childrenSelectionFuncs from './childrenSelection'
 import {withTime, withTimeF} from './common'
 import determineSeeds from './determineSeeds'
@@ -19,7 +19,7 @@ type FullResult = {
 
 export type RunResult = {Iterations: number; NFE: number; SucRun: boolean} & Stats['mainStats']
 
-const run = (dimensions: number, funcs = Object.keys(S) as TestFuncName[]): FullResult[] =>
+const run = (dimensions: number, funcs = Object.keys(T) as TestFuncName[]): FullResult[] =>
   withTime('Full run', () =>
     _.flatMap(
       funcs
@@ -35,7 +35,7 @@ const run = (dimensions: number, funcs = Object.keys(S) as TestFuncName[]): Full
           generateStartingIndividuals({
             size: populationSize,
             dimensions,
-            argRange: testFunctionSpec.argRange,
+            argsRange: testFunctionSpec.argsRange,
           }),
         )
 
@@ -49,6 +49,7 @@ const runTestFunction = (
   testFunctionSpec: TestFunctionSpec,
 ): FullResult[] =>
   _.flatMap(
+    // _.pick(childrenSelectionFuncs, 'ELITE'),
     childrenSelectionFuncs,
     withTimeF('Children selection function', childrenSelectionConfig =>
       MUTATION_PROBABILITIES.map(
@@ -131,13 +132,15 @@ const makeEvolutionRunner = (runConfig: RunConfig) => (
 const generateStartingIndividuals = ({
   size,
   dimensions,
-  argRange: {min, max},
+  argsRange,
 }: {
   size: number
   dimensions: number
-  argRange: {min: number; max: number}
+  argsRange: ArgsRange
 }): Individual[] =>
-  _.times(size, () => makeIndividual(_.times(dimensions, () => _.random(min, max, true))))
+  _.times(size, () =>
+    makeIndividual(_.times(dimensions, it => _.random(argsRange[it].min, argsRange[it].max, true))),
+  )
 
 const getPopulationSize = (dimensions: number, wide: boolean): number =>
   dimensions <= 3 ? (wide ? 1000 : 500) : wide ? 10_000 : 5_000

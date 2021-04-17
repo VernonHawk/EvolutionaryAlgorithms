@@ -5,7 +5,7 @@ export const F20_m2_Rastrigin: TestFunctionSpec = {
   name: 'F20_m2_Rastrigin',
   fun: individual =>
     10 * individual.length - sum(individual, x => Math.pow(x, 2) + 10 * Math.cos(2 * Math.PI * x)),
-  argRange: {min: -5.12, max: 5.12},
+  argsRange: [{min: -5.12, max: 5.12}],
   peaks: [
     {x: 0.49748, locality: 'global'},
     {x: -0.49748, locality: 'global'},

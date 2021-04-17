@@ -22,15 +22,22 @@ const generateChildren = ({
     _.times(CHILDREN_TO_GENERATE, () =>
       individualToPopulationEntry(testFunctionSpec.fun)(
         makeIndividual(
-          parent.individual.map(
-            geneMutation({
-              normalDistribution,
-              clamp: gene =>
-                makeGene(
-                  _.clamp(gene, testFunctionSpec.argRange.min, testFunctionSpec.argRange.max),
-                ),
-              mutationProbability,
-            }),
+          parent.individual.map((gene, idx) =>
+            geneMutation(
+              {
+                normalDistribution,
+                clamp: gene =>
+                  makeGene(
+                    _.clamp(
+                      gene,
+                      testFunctionSpec.argsRange[idx].min,
+                      testFunctionSpec.argsRange[idx].max,
+                    ),
+                  ),
+                mutationProbability,
+              },
+              gene,
+            ),
           ),
         ),
       ),
@@ -44,7 +51,8 @@ type MutationAttrs = {
   clamp: (gene: Gene) => Gene
 }
 
-const geneMutation = ({normalDistribution, mutationProbability, clamp}: MutationAttrs) => (
+const geneMutation = (
+  {normalDistribution, mutationProbability, clamp}: MutationAttrs,
   gene: Gene,
 ): Gene =>
   Math.random() < mutationProbability ? clamp(makeGene(gene + normalDistribution())) : gene
