@@ -23,5 +23,8 @@ export const generatePeaks = ({
   return res
 }
 
-export const sum = (individual: Individual, comp: (x: number) => number): number =>
-  individual.reduce((acc, x) => acc + comp(x), 0)
+export const sum = (individual: Individual, comp: (x: number, idx: number) => number): number =>
+  individual.reduce((acc, x, i) => acc + comp(x, i), 0)
+
+export const product = (individual: Individual, comp: (x: number, idx: number) => number): number =>
+  individual.reduce((acc, x, i) => acc * comp(x, i), 1)

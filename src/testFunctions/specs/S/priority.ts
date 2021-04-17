@@ -1,5 +1,5 @@
-import {TestFunctionSpec} from '../common'
-import {generatePeaks, sum} from '../helpers'
+import {TestFunctionSpec} from '../../common'
+import {generatePeaks, product, sum} from '../../helpers'
 
 export const F20_Rastrigin: TestFunctionSpec = {
   name: 'F20_Rastrigin',
@@ -23,26 +23,17 @@ export const F20_Rastrigin: TestFunctionSpec = {
   dimensions: 'ALL',
 }
 
-// export const F20_m_Rastrigin: TestFunctionSpec = {
-//   name: 'F20_m_Rastrigin',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-//   wide: false,
-// dimensions: 'ALL'
-// }
-
-export const F20_m2_Rastrigin: TestFunctionSpec = {
-  name: 'F20_m2_Rastrigin',
+export const F20_m_Rastrigin: TestFunctionSpec = {
+  name: 'F20_m_Rastrigin',
   fun: individual =>
-    10 * individual.length - sum(individual, x => Math.pow(x, 2) + 10 * Math.cos(2 * Math.PI * x)),
-  argRange: {min: -5.12, max: 5.12},
-  peaks: [
-    {x: 0.49748, locality: 'global'},
-    {x: -0.49748, locality: 'global'},
-  ],
+    -10 -
+    9 * Math.cos(2 * Math.PI * 3 * individual[0]) -
+    10 -
+    9 * Math.cos(2 * Math.PI * 4 * individual[1]),
+  argRange: {min: 0, max: 1},
+  peaks: [],
   wide: false,
-  dimensions: 'ALL',
+  dimensions: 2,
 }
 
 export const F22_Griewangk: TestFunctionSpec = {
@@ -51,7 +42,7 @@ export const F22_Griewangk: TestFunctionSpec = {
     individual.length -
     1 -
     sum(individual, x => Math.pow(x, 2)) / 4_000 +
-    individual.reduce((acc, x, i) => acc * Math.cos(x / Math.sqrt(i + 1)), 1),
+    product(individual, (x, i) => Math.cos(x / Math.sqrt(i + 1))),
   argRange: {min: -600, max: 600},
   peaks: [
     {x: 0, locality: 'global'},
@@ -70,6 +61,7 @@ export const F22_Griewangk: TestFunctionSpec = {
   dimensions: 'ALL',
 }
 
+// TODO:
 // export const F23_Schwefel: TestFunctionSpec = {
 //   name: 'F23_Schwefel',
 //   fun: individual => individual,
@@ -78,6 +70,7 @@ export const F22_Griewangk: TestFunctionSpec = {
 // wide: true
 // }
 
+// TODO:
 // export const F24_Generalized_Shubert: TestFunctionSpec = {
 //   name: 'F24_Generalized_Shubert',
 //   fun: individual => individual,
@@ -86,6 +79,7 @@ export const F22_Griewangk: TestFunctionSpec = {
 // wide: false
 // }
 
+// TODO:
 // export const F25_Ackley: TestFunctionSpec = {
 //   name: 'F25_Ackley',
 //   fun: individual => individual,
@@ -94,6 +88,7 @@ export const F22_Griewangk: TestFunctionSpec = {
 // wide: true
 // }
 
+// TODO:
 // export const F28_Vincent: TestFunctionSpec = {
 //   name: 'F28_Vincent',
 //   fun: individual => individual,
@@ -102,26 +97,33 @@ export const F22_Griewangk: TestFunctionSpec = {
 // wide: false
 // }
 
-export const F31_Xin_She_Yang_2: TestFunctionSpec = {
-  name: 'F31_Xin_She_Yang_2',
+const Xin_She_Yang_2_Base: Omit<TestFunctionSpec, 'name' | 'peaks' | 'dimensions'> = {
   fun: individual => sum(individual, Math.abs) * Math.exp(-sum(individual, x => Math.pow(x, 2))),
   argRange: {min: -10, max: 10},
+  wide: false,
+}
+
+export const F31_Xin_She_Yang_2_dim_1: TestFunctionSpec = {
+  ...Xin_She_Yang_2_Base,
+  name: 'F31_Xin_She_Yang_2_dim_1',
   peaks: [
     {x: Math.SQRT1_2, locality: 'global'},
     {x: -Math.SQRT1_2, locality: 'global'},
   ],
-  wide: false,
-  dimensions: 'ALL',
+  dimensions: 1,
 }
 
-// export const F38_Goldstein_Price: TestFunctionSpec = {
-//   name: 'F38_Goldstein_Price',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
+export const F31_Xin_She_Yang_2_dim_2: TestFunctionSpec = {
+  ...Xin_She_Yang_2_Base,
+  name: 'F31_Xin_She_Yang_2_dim_2',
+  peaks: [
+    {x: 0.5, locality: 'global'},
+    {x: -0.5, locality: 'global'},
+  ],
+  dimensions: 2,
+}
 
+// TODO:
 // export const F42_5_hills_4_valleys: TestFunctionSpec = {
 //   name: 'F42_5_hills_4_valleys',
 //   fun: individual => individual,
@@ -130,22 +132,7 @@ export const F31_Xin_She_Yang_2: TestFunctionSpec = {
 // wide: false
 // }
 
-// export const F43_1_center_peak_4_neighbours: TestFunctionSpec = {
-//   name: 'F43_1_center_peak_4_neighbours',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
-
-// export const F44_Ursem_Waves: TestFunctionSpec = {
-//   name: 'F44_Ursem_Waves',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
-
+// TODO:
 // export const F45_Himmelblau: TestFunctionSpec = {
 //   name: 'F45_Himmelblau',
 //   fun: individual => individual,
@@ -154,6 +141,7 @@ export const F31_Xin_She_Yang_2: TestFunctionSpec = {
 // wide: false
 // }
 
+// TODO:
 // export const F46_six_hump_camel_back: TestFunctionSpec = {
 //   name: 'F46_six_hump_camel_back',
 //   fun: individual => individual,
@@ -162,44 +150,13 @@ export const F31_Xin_She_Yang_2: TestFunctionSpec = {
 // wide: false
 // }
 
-// export const F48_Branin: TestFunctionSpec = {
-//   name: 'F48_Branin',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
-
+// TODO:
 // export const F50_Easom: TestFunctionSpec = {
 //   name: 'F50_Easom',
 //   fun: individual => individual,
 //   argRange: {min: 0, max: 1},
 //   peaks: [],
 // wide: true
-// }
-
-// export const F50_g_Easom_generalized: TestFunctionSpec = {
-//   name: 'F50_g_Easom_generalized',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
-
-// export const F54_Shekel_Foxholes: TestFunctionSpec = {
-//   name: 'F54_Shekel_Foxholes',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: true
-// }
-
-// export const F100_Bird: TestFunctionSpec = {
-//   name: 'F100_Bird',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
 // }
 
 export const D6_Five_Uneven_Peak_Trap: TestFunctionSpec = {
@@ -254,6 +211,7 @@ export const D6_Five_Uneven_Peak_Trap: TestFunctionSpec = {
   dimensions: 1,
 }
 
+// TODO:
 // export const D7_2_dim_Trap: TestFunctionSpec = {
 //   name: 'D7_2_dim_Trap',
 //   fun: individual => individual,
