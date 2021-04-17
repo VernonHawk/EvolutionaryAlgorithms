@@ -61,14 +61,14 @@ export const F22_Griewangk: TestFunctionSpec = {
   dimensions: 'ALL',
 }
 
-// TODO:
-// export const F23_Schwefel: TestFunctionSpec = {
-//   name: 'F23_Schwefel',
-//   fun: individual => individual,
-//   argRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: true
-// }
+export const F23_Schwefel: TestFunctionSpec = {
+  name: 'F23_Schwefel',
+  fun: individual => sum(individual, x => x * Math.sin(Math.sqrt(Math.abs(x)))) / individual.length,
+  argRange: {min: -500, max: 500},
+  peaks: [{x: 420.9687, locality: 'global'}],
+  wide: true,
+  dimensions: 'ALL',
+}
 
 // TODO:
 // export const F24_Generalized_Shubert: TestFunctionSpec = {
