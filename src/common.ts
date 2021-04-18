@@ -19,8 +19,11 @@ export const makeIndividual = make<Individual>()
 export type Population = PopulationEntry[]
 export type PopulationEntry = {individual: Individual; health: Health}
 
-export type Peak = Brand<PopulationEntry, 'Peak'>
-export const makePeak = make<Peak>()
+export type Peak = PopulationEntry
+export type HealthPeak = Omit<Peak, 'individual'>
+
+export const isNormalPeak = (peak: Peak | HealthPeak): peak is Peak =>
+  (peak as Peak).individual !== undefined
 
 export const individualsToPopulation = (
   individuals: readonly Individual[],

@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import random from 'random'
+import {CHILDREN_TO_GENERATE} from './childrenGeneration'
 import {lowerBound, mutableSwapRemove, Population, PopulationEntry} from './common'
 
 export type ChildrenPickerConfig = {
@@ -20,9 +21,9 @@ export const CROWD_TOUR: ChildrenPickerConfig = {
         _.maxBy(
           [
             population[i],
-            population[size + i * 3],
-            population[size + i * 3 + 1],
-            population[size + i * 3 + 2],
+            population[size + i * CHILDREN_TO_GENERATE],
+            population[size + i * CHILDREN_TO_GENERATE + 1],
+            population[size + i * CHILDREN_TO_GENERATE + 2],
           ],
           'health',
         )!,

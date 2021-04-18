@@ -1,7 +1,7 @@
 import _ from 'lodash'
-import {Individual, individualToPopulationEntry, makeGene, Peak, PopulationEntry} from './common'
+import {Individual, individualToPopulationEntry, isNormalPeak, makeGene, Peak} from './common'
 import {distance} from './distance'
-import {FuncPeak, TestFunctionSpec} from './testFunctions'
+import {FuncPeak, TestFunctionSpec, TestFunSpecHealthPeak, TestFunSpecPeak} from './testFunctions'
 
 export type Stats = {
   mainStats: {
@@ -28,11 +28,9 @@ const getStats = ({
   const dimensions = seeds[0].individual.length
 
   const NSeeds = seeds.length
-  const peaks = !!testFunctionSpec.absolutePeaks?.length
-    ? testFunctionSpec.absolutePeaks
-    : generatePeaks(testFunctionSpec, dimensions)
+  const peaks = getPeaks(testFunctionSpec, dimensions)
 
-  const {globalPeaks, localPeaks, falsePeaks} = verifySeeds(peaks, seeds)
+  const {globalPeaks, localPeaks, falsePeaks} = verifySeeds(seeds, peaks)
   const GP = globalPeaks.length
   const LP = localPeaks.length
   const NP = GP + LP
@@ -71,8 +69,8 @@ const determineLowestFoundPeak = ({
 }
 
 const verifySeeds = (
-  peaks: ({global: boolean} & PopulationEntry)[],
   seeds: Peak[],
+  peaks: (TestFunSpecPeak | TestFunSpecHealthPeak)[],
 ): {globalPeaks: Peak[]; localPeaks: Peak[]; falsePeaks: Peak[]} => {
   const globalPeaks: Peak[] = []
   const localPeaks: Peak[] = []
@@ -82,7 +80,7 @@ const verifySeeds = (
     const matchingPeak = peaks.find(
       peak =>
         peak.health - seed.health <= HEALTH_TOLERANCE &&
-        distance(seed.individual, peak.individual) <= DISTANCE_TOLERANCE,
+        (!isNormalPeak(peak) || distance(seed.individual, peak.individual) <= DISTANCE_TOLERANCE),
     )
 
     if (!matchingPeak) {
@@ -104,6 +102,16 @@ const verifySeeds = (
 const HEALTH_TOLERANCE = 0.01
 // delta
 const DISTANCE_TOLERANCE = 0.01
+
+const getPeaks = (
+  testFunctionSpec: TestFunctionSpec,
+  dimensions: number,
+): (TestFunSpecPeak | TestFunSpecHealthPeak)[] =>
+  !!testFunctionSpec.absolutePeaks?.length
+    ? testFunctionSpec.absolutePeaks
+    : !!testFunctionSpec.healthPeaks?.length
+    ? testFunctionSpec.healthPeaks
+    : generatePeaks(testFunctionSpec, dimensions)
 
 const generatePeaks = (testFunctionSpec: TestFunctionSpec, dimensions: number) => {
   const res: {peak: Individual; global: boolean}[] = []
