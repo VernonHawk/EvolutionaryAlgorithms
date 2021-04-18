@@ -94,7 +94,6 @@ const makeEvolutionRunner = (runConfig: RunConfig) => (
   const evolutionRes = runEvolution(startingIndividuals, config)
 
   const seeds = determineSeeds(evolutionRes.finalPopulation)
-  console.log('Seeds', seeds)
 
   const stats = getStats({seeds, testFunctionSpec: runConfig.testFunctionSpec})
 

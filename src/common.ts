@@ -3,7 +3,7 @@ import fs from 'fs'
 import {Brand, make} from 'ts-brand'
 import {TestFunction} from './testFunctions'
 
-export const TEST_RUNS = 1
+export const TEST_RUNS = 10
 
 export const RESULTS_FOLDER = 'results'
 

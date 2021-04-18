@@ -222,23 +222,51 @@ export const F45_Himmelblau: TestFunctionSpec = {
   dimensions: 2,
 }
 
-// TODO:
-// export const F46_six_hump_camel_back: TestFunctionSpec = {
-//   name: 'F46_six_hump_camel_back',
-//   fun: individual => individual,
-//   argsRange: [{min: 0, max: 1}],
-//   peaks: [],
-// wide: false
-// }
+const F46_six_hump_camel_back_fun: TestFunctionSpec['fun'] = ([x1, x2]) =>
+  -(
+    (4 - 2.1 * Math.pow(x1, 2) + Math.pow(x1, 4) / 3) * Math.pow(x1, 2) +
+    x1 * x2 +
+    4 * (Math.pow(x2, 2) - 1) * Math.pow(x2, 2)
+  )
+export const F46_six_hump_camel_back: TestFunctionSpec = {
+  name: 'F46_six_hump_camel_back',
+  fun: F46_six_hump_camel_back_fun,
+  argsRange: [
+    {min: -3, max: 3},
+    {min: -2, max: 2},
+  ],
+  peaks: [],
+  absolutePeaks: [
+    ...[
+      [-0.0898, 0.7126],
+      [0.0898, -0.7126],
+    ].map(p => ({
+      global: true,
+      ...makePeak(individualToPopulationEntry(F46_six_hump_camel_back_fun)(makeIndividual(p))),
+    })),
+    ...[
+      [-1.7036, 0.7961],
+      [1.7036, -0.7961],
+      [-1.6071, -0.5687],
+      [1.6071, 0.5687],
+    ].map(p => ({
+      global: false,
+      ...makePeak(individualToPopulationEntry(F46_six_hump_camel_back_fun)(makeIndividual(p))),
+    })),
+  ],
+  wide: false,
+  dimensions: 2,
+}
 
-// TODO:
-// export const F50_Easom: TestFunctionSpec = {
-//   name: 'F50_Easom',
-//   fun: individual => individual,
-//   argsRange: [{min: 0, max: 1}],
-//   peaks: [],
-// wide: true
-// }
+export const F50_Easom: TestFunctionSpec = {
+  name: 'F50_Easom',
+  fun: ([x1, x2]) =>
+    Math.cos(x1) * Math.cos(x2) * Math.exp(-Math.pow(x1 - Math.PI, 2) - Math.pow(x2 - Math.PI, 2)),
+  argsRange: [{min: -100, max: 100}],
+  peaks: [{x: Math.PI, locality: 'global'}],
+  wide: true,
+  dimensions: 2,
+}
 
 export const D6_Five_Uneven_Peak_Trap: TestFunctionSpec = {
   name: 'D6_Five_Uneven_Peak_Trap',
@@ -291,11 +319,60 @@ export const D6_Five_Uneven_Peak_Trap: TestFunctionSpec = {
   dimensions: 1,
 }
 
-// TODO:
-// export const D7_2_dim_Trap: TestFunctionSpec = {
-//   name: 'D7_2_dim_Trap',
-//   fun: individual => individual,
-//   argsRange: {min: 0, max: 1},
-//   peaks: [],
-// wide: false
-// }
+const makeD7_2_dim_Trap_fun = (delta: number): TestFunctionSpec['fun'] => ([x1, x2]) => {
+  if (x1 >= D7_2_dim_Trap_a && x1 <= D7_2_dim_Trap_a + delta) {
+    if (x2 >= D7_2_dim_Trap_b && x2 <= D7_2_dim_Trap_b + delta) {
+      return 4
+    }
+
+    return 1
+  }
+
+  if (x2 >= D7_2_dim_Trap_b && x2 <= D7_2_dim_Trap_b + delta) {
+    return 2
+  }
+
+  return 3
+}
+const D7_2_dim_Trap_Base: Omit<TestFunctionSpec, 'name' | 'fun' | 'peaks' | 'absolutePeaks'> = {
+  argsRange: [{min: 0, max: 1}],
+  wide: false,
+  dimensions: 2,
+}
+const D7_2_dim_Trap_a = 0.4
+const D7_2_dim_Trap_b = 0.4
+
+export const D7_2_dim_Trap_delta_001: TestFunctionSpec = {
+  ...D7_2_dim_Trap_Base,
+  name: 'D7_2_dim_Trap_delta_001',
+  fun: makeD7_2_dim_Trap_fun(0.01),
+  peaks: [],
+}
+
+export const D7_2_dim_Trap_delta_01: TestFunctionSpec = {
+  ...D7_2_dim_Trap_Base,
+  name: 'D7_2_dim_Trap_delta_01',
+  fun: makeD7_2_dim_Trap_fun(0.1),
+  peaks: [],
+}
+
+export const D7_2_dim_Trap_delta_003: TestFunctionSpec = {
+  ...D7_2_dim_Trap_Base,
+  name: 'D7_2_dim_Trap_delta_003',
+  fun: makeD7_2_dim_Trap_fun(0.03),
+  peaks: [],
+}
+
+export const D7_2_dim_Trap_delta_005: TestFunctionSpec = {
+  ...D7_2_dim_Trap_Base,
+  name: 'D7_2_dim_Trap_delta_005',
+  fun: makeD7_2_dim_Trap_fun(0.05),
+  peaks: [],
+}
+
+export const D7_2_dim_Trap_delta_007: TestFunctionSpec = {
+  ...D7_2_dim_Trap_Base,
+  name: 'D7_2_dim_Trap_delta_007',
+  fun: makeD7_2_dim_Trap_fun(0.07),
+  peaks: [],
+}
