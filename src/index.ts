@@ -20,7 +20,7 @@ type FullResult = {
 export type RunResult = {Iterations: number; NFE: number; SucRun: boolean} & Stats['mainStats']
 
 const run = (dimensions: number, funcs = Object.keys(T) as TestFuncName[]): FullResult[] =>
-  withTime('Full run', () =>
+  withTime(`${dimensions} dimensions`, () =>
     _.flatMap(
       funcs
         .map(f => specs[f])

@@ -129,8 +129,7 @@ export const F25_Ackley: TestFunctionSpec = {
   fun: individual =>
     20 * Math.exp(-0.2 * Math.sqrt(sum(individual, x => Math.pow(x, 2)) / individual.length)) +
     Math.exp(sum(individual, x => Math.cos(2 * Math.PI * x)) / individual.length) -
-    20 -
-    Math.E,
+    (20 + Math.E),
   argsRange: [{min: -32.768, max: 32.768}],
   peaks: [{x: 0, locality: 'global'}],
   wide: true,
