@@ -25,12 +25,19 @@ export const F20_Rastrigin: TestFunctionSpec = {
   dimensions: 'ALL',
 }
 
+const F20_m_Rastrigin_fun: TestFunctionSpec['fun'] = ([x1, x2]) =>
+  -10 - 9 * Math.cos(2 * Math.PI * 3 * x1) - 10 - 9 * Math.cos(2 * Math.PI * 4 * x2)
 export const F20_m_Rastrigin: TestFunctionSpec = {
   name: 'F20_m_Rastrigin',
-  fun: ([x1, x2]) =>
-    -10 - 9 * Math.cos(2 * Math.PI * 3 * x1) - 10 - 9 * Math.cos(2 * Math.PI * 4 * x2),
+  fun: F20_m_Rastrigin_fun,
   argsRange: [{min: 0, max: 1}],
   peaks: [],
+  absolutePeaks: _.range(1, 6, 2)
+    .flatMap(x1 => _.range(1, 8, 2).map(x2 => [x1 / 6, x2 / 8]))
+    .map(peak => ({
+      global: true,
+      ...individualToPopulationEntry(F20_m_Rastrigin_fun)(makeIndividual(peak)),
+    })),
   wide: false,
   dimensions: 2,
 }
