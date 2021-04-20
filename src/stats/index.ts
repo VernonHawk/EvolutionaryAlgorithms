@@ -1,9 +1,6 @@
 import _ from 'lodash'
 import {Peak} from '../common'
-import {
-  Locality,
-  TestFunctionSpec,
-} from '../testFunctions'
+import {Locality, TestFunctionSpec} from '../testFunctions'
 import verifySeeds from './seedsVerification'
 
 export type Stats = {
@@ -28,15 +25,14 @@ const getStats = ({
   seeds: Peak[]
   testFunctionSpec: TestFunctionSpec
 }): Stats => {
-  const dimensions = seeds[0].individual.length
   const NSeeds = seeds.length
 
-  const {globalPeaks, localPeaks, falsePeaks} = verifySeeds(seeds, testFunctionSpec, dimensions)
+  const {globalPeaks, localPeaks, falsePeaks} = verifySeeds(seeds, testFunctionSpec)
   const GP = globalPeaks.length
   const LP = localPeaks.length
   const NP = GP + LP
 
-  const peaksAmount = getPeaksAmount(testFunctionSpec, dimensions)
+  const peaksAmount = getPeaksAmount(testFunctionSpec, seeds[0].individual.length)
   return {
     additionalStats: {foundGlobalPeaks: globalPeaks, foundLocalPeaks: localPeaks, falsePeaks},
     mainStats: {

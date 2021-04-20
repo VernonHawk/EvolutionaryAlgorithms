@@ -1,17 +1,11 @@
-import {Individual, individualToPopulationEntry, makeGene, Peak} from '../common'
+import _ from 'lodash'
+import {individualToPopulationEntry, makeIndividual, Peak} from '../common'
 import {distance} from '../distance'
-import {
-  FuncPeak,
-  Locality,
-  TestFunctionSpec,
-  TestFunSpecHealthPeak,
-  TestFunSpecPeak,
-} from '../testFunctions'
+import {TestFunctionSpec, TestFunSpecHealthPeak, TestFunSpecPeak} from '../testFunctions'
 
 const verifySeeds = (
   seeds: Peak[],
   testFunctionSpec: TestFunctionSpec,
-  dimensions: number,
 ): {globalPeaks: Peak[]; localPeaks: Peak[]; falsePeaks: Peak[]} => {
   if (!!testFunctionSpec.absolutePeaks?.length) {
     return verifySeedsBase(seeds, seed =>
@@ -27,10 +21,19 @@ const verifySeeds = (
     )
   }
 
-  const peaks = generatePeaks(testFunctionSpec, dimensions)
-  return verifySeedsBase(seeds, seed =>
-    peaks.find(peak => matchesHealth(peak, seed) && matchesDistance(peak, seed)),
-  )
+  return verifySeedsBase(seeds, seed => {
+    const funcPeaks = seed.individual.map(
+      gene => _.minBy(testFunctionSpec.peaks, ({x}) => Math.abs(gene - x))!,
+    )
+    const closestPeak: TestFunSpecPeak = {
+      ...individualToPopulationEntry(testFunctionSpec.fun)(makeIndividual(_.map(funcPeaks, 'x'))),
+      locality: _.some(funcPeaks, ['locality', 'local']) ? 'local' : 'global',
+    }
+
+    return matchesHealth(closestPeak, seed) && matchesDistance(closestPeak, seed)
+      ? closestPeak
+      : undefined
+  })
 }
 export default verifySeeds
 
@@ -68,43 +71,4 @@ const verifySeedsBase = (
   })
 
   return {globalPeaks, localPeaks, falsePeaks}
-}
-
-const generatePeaks = (testFunctionSpec: TestFunctionSpec, dimensions: number) => {
-  const res: {peak: Individual; locality: Locality}[] = []
-  const tmp: Individual = []
-
-  peakGenerationHelper(testFunctionSpec.peaks, res, tmp, dimensions, 'global')
-
-  return res.map(({peak, ...rest}) => ({
-    ...individualToPopulationEntry(testFunctionSpec.fun)(peak),
-    ...rest,
-  }))
-}
-
-const peakGenerationHelper = (
-  funcPeaks: FuncPeak[],
-  res: {peak: Individual; locality: Locality}[],
-  tmp: Individual,
-  dimensions: number,
-  locality: Locality,
-): void => {
-  if (tmp.length == dimensions) {
-    res.push({peak: [...tmp], locality})
-    return
-  }
-
-  for (const {x, locality: peakLocality} of funcPeaks) {
-    tmp.push(makeGene(x))
-
-    peakGenerationHelper(
-      funcPeaks,
-      res,
-      tmp,
-      dimensions,
-      peakLocality === 'global' && locality === 'global' ? 'global' : 'local',
-    )
-
-    tmp.pop()
-  }
 }

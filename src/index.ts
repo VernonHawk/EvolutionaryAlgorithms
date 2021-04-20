@@ -49,8 +49,8 @@ const runTestFunction = (
   testFunctionSpec: TestFunctionSpec,
 ): FullResult[] =>
   _.flatMap(
-    // _.pick(childrenSelectionFuncs, 'ELITE'),
-    childrenSelectionFuncs,
+    // childrenSelectionFuncs,
+    _.pick(childrenSelectionFuncs, 'ELITE'),
     withTimeF('Children selection function', childrenSelectionConfig =>
       MUTATION_PROBABILITIES.map(
         withTimeF('Mutation probability', mutationProbability => {
@@ -122,6 +122,10 @@ const makeEvolutionRunner = (runConfig: RunConfig) => (
     SucRun: evolutionRes.didConverge,
     ...stats.mainStats,
   }
+
+  console.log('Seeds amount', stats.mainStats.NSeeds)
+  console.log('Found global peaks', stats.mainStats.GP)
+  console.log('Found local peaks', stats.mainStats.LP)
 
   writeRunResults(dimensions, config, results)
 
