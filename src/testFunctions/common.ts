@@ -3,8 +3,8 @@ import specs from './specs'
 
 export type ArgsRange = {min: number; max: number}[]
 
-export type TestFunSpecPeak = Peak & {global: boolean}
-export type TestFunSpecHealthPeak = HealthPeak & {global: boolean}
+export type TestFunSpecPeak = Peak & {locality: Locality}
+export type TestFunSpecHealthPeak = HealthPeak & {locality: Locality}
 
 export type TestFunction = (individual: Individual) => number
 export type TestFunctionSpec = {

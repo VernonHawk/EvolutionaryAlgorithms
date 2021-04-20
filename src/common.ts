@@ -22,9 +22,6 @@ export type PopulationEntry = {individual: Individual; health: Health}
 export type Peak = PopulationEntry
 export type HealthPeak = Omit<Peak, 'individual'>
 
-export const isNormalPeak = (peak: Peak | HealthPeak): peak is Peak =>
-  (peak as Peak).individual !== undefined
-
 export const individualsToPopulation = (
   individuals: readonly Individual[],
   fun: TestFunction,
