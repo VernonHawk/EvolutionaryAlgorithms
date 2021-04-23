@@ -49,8 +49,7 @@ const runTestFunction = (
   testFunctionSpec: TestFunctionSpec,
 ): FullResult[] =>
   _.flatMap(
-    // childrenSelectionFuncs,
-    _.pick(childrenSelectionFuncs, 'ELITE'),
+    childrenSelectionFuncs,
     withTimeF('Children selection function', childrenSelectionConfig =>
       MUTATION_PROBABILITIES.map(
         withTimeF('Mutation probability', mutationProbability => {

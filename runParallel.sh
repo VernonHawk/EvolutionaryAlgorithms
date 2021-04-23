@@ -1,14 +1,14 @@
 #! /bin/zsh
 
 run () {
-  osascript -e "tell app \"Terminal\" to do script \"cd '$HOME/Desktop/Study/Year_2_Trim_2/Evolutionary Algorithms/Lab' && npm run start -- $1\""
+  osascript -e "tell app \"Terminal\" to do script \"cd '$HOME/Desktop/Study/Year_2_Trim_2/Evolutionary Algorithms/Lab' && npm run start -- $1 $2\""
 }
 
 # All dimesions
-run 'F15_deba1'
-run 'F16_deba2'
-run 'F18_deba3'
-run 'F19_deba4'
+# run 'F15_deba1'
+# run 'F16_deba2'
+# run 'F18_deba3'
+# run 'F19_deba4'
 
 # run 'F20_Rastrigin'
 # run 'F20_m2_Rastrigin'
